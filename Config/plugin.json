@@ -1,0 +1,14 @@
+{
+	"name": "Shop",
+	"description": "Shop plugin",
+
+	"author": "Mohammad Saleh",
+	"authorEmail": "mSaleh@gmail.com",
+	"authorUrl": "http://example.com",
+
+	"dependencies": {
+		"plugins": [
+			"Payment"
+		]
+	}
+}

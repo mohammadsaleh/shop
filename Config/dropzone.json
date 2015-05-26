@@ -1,0 +1,9 @@
+{
+    "default" : {
+        "target_action" : ["Products/admin_add", "Products/admin_edit"],
+        "title" : "Pictures",
+        "upload_url" : "/admin/dropzone/dropzone_uploads/upload",
+        "template_element" : "Shop.dropzone_template",
+        "dropzone_position" : "metabox"
+    }
+}
