@@ -54,7 +54,7 @@ class Product extends ShopAppModel {
             'joinTable' => 'shop_products_attachments',
             'foreignKey' => 'product_id',
             'associationForeignKey' => 'attachment_id',
-            'unique' => 'keepExisting',
+            'unique' => false,
             'conditions' => '',
             'fields' => 'id, title, slug, mime_type, path, type',
             'order' => '',

@@ -1,6 +1,7 @@
 <?php
 Croogo::hookComponent('*', 'Shop.Shop');
 Croogo::hookHelper('*', 'Shop.Shop');
+Croogo::hookBehavior('FactureItem', 'Shop.Shop');
 
 CroogoNav::add('sidebar', 'shop', array(
     'title' => __d('shop', 'Shop Center'),
