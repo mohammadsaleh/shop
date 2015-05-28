@@ -23,7 +23,10 @@ class ProductsController extends ShopAppController {
 //        $this->Security->validatePost = false;
 //        $this->Security->csrfCheck = false;
     }
-	}
+    public function index(){
+        $products = $this->Product->find('all');
+        debug($products);die;
+    }
     public function view($id = null){
         if(isset($id)){
             $product = $this->Product->find('first', array(
