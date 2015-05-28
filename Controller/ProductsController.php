@@ -1,5 +1,6 @@
 <?php
 App::uses('ShopAppController', 'Shop.Controller');
+App::uses('classFacture', 'Payment.Lib');
 /**
  * Products Controller
  *
@@ -22,6 +23,7 @@ class ProductsController extends ShopAppController {
 //        $this->Security->validatePost = false;
 //        $this->Security->csrfCheck = false;
     }
+	}
     public function view($id = null){
         if(isset($id)){
             $product = $this->Product->find('first', array(
@@ -30,7 +32,58 @@ class ProductsController extends ShopAppController {
             $this->set('product', $product);
             $this->render('Shop.view');
         }
+
     }
+
+    /**
+     * @param null $productId
+     */
+    public function add_to_card($productId = null){
+        $this->Session->delete('pay');
+//        $this->Session->write('pay.direct', 1);
+//        $this->Session->write('pay.paymentPlugin', 'zarin_pal');
+//        debug($this->Session->read('pay'));
+//        die;
+        $this->autoRender = false;
+//        if($this->request->is('ajax') && $productId){
+            $this->Product->id = $productId;
+            $this->Product->recursive = -1;
+            $productInfo = $this->Product->findById($productId);
+            if(!empty($productInfo)){
+                $this->__addToCard($productInfo);
+                //process FactureItemMetas ( add to session )
+            }
+//        }
+    }
+
+    /**
+     * @param $item
+     */
+    private function __addToCard($item){
+        //if there is not any facture create new
+        //add to facture items
+        //if item exist increase it's number
+        $price = $item['Product']['price'];
+        $off = $item['Product']['off'] ? $item['Product']['off'] : 0;
+        $price = $price - (($price * $off) / 100);
+        $factureItem = array(
+            'number' => 1,
+            'price' => $price,
+            'type' => -1,
+            'model' => 'Product',
+            'foreign_key' => $item['Product']['id'],
+            'description' => $item['Product']['title'],
+        );
+        if(!$this->Session->check('pay.facture')){
+            $facture = array(
+                'status' => 0,
+                'FactureItem' => array()
+            );
+            $this->Session->write('pay.facture', $facture);
+        }
+        classFacture::addFactureItemsToSession($factureItem, $item['Product']['id']);
+    }
+
 /**
  * admin_index method
  *

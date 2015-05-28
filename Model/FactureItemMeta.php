@@ -8,7 +8,7 @@ App::uses('ShopAppModel', 'Shop.Model');
  */
 class FactureItemMeta extends ShopAppModel {
 
-    public $tablePrefix = 'main_';
+    public $tablePrefix = '';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 /**
