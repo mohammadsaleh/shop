@@ -1,5 +1,5 @@
 <?php
-//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 App::uses('ShopAppController', 'Shop.Controller');
 /**
  * Products Controller
