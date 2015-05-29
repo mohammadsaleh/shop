@@ -83,15 +83,19 @@ class Category extends ShopAppModel {
      * @param null $categoryId
      * @return mixed
      */
-    public function getCategoryProperties($categoryId = null){
+    public function getCategoryProperties($categoryId = null, $selectableProperties = false){
         $allParentsCategoryId = $this->getPath($categoryId);
         $categoryIds = Set::extract('{n}.Category.id', $allParentsCategoryId);
         $this->Property->unbindModel(
             array('hasMany' => array('ProductMeta'))
         );
+        $conditions = array('Property.category_id' => $categoryIds);
+        if($selectableProperties){
+            $conditions['Property.selectable_on_order'] = true;
+        }
         $categoryProperties = $this->Property->find('all', array(
             'fields' => array('Property.*', 'Category.id', 'Category.title'),
-            'conditions' => array('Property.category_id' => $categoryIds),
+            'conditions' => $conditions,
             'recursive' => 1
         ));
         return $categoryProperties;

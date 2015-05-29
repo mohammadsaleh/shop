@@ -32,8 +32,12 @@ class ProductsController extends ShopAppController {
             $product = $this->Product->find('first', array(
                 'conditions' => array('Product.id' => $id),
             ));
+            $selectableProperties = $this->Product->Category->getCategoryProperties($product['Category']['id'], true);
+            $product['SelectableProperties'] = $selectableProperties;
             $this->set('product', $product);
-            $this->render('Shop.view');
+//            debug($product);die;
+        }else{
+            $this->redirect('/');
         }
 
     }
@@ -42,21 +46,23 @@ class ProductsController extends ShopAppController {
      * @param null $productId
      */
     public function add_to_card($productId = null){
-        $this->Session->delete('pay');
+//        $this->Session->delete('pay');
 //        $this->Session->write('pay.direct', 1);
 //        $this->Session->write('pay.paymentPlugin', 'zarin_pal');
 //        debug($this->Session->read('pay'));
 //        die;
         $this->autoRender = false;
-//        if($this->request->is('ajax') && $productId){
+        $response = array('status' => 'error');
+        if($this->request->is('ajax') && $productId){
             $this->Product->id = $productId;
             $this->Product->recursive = -1;
             $productInfo = $this->Product->findById($productId);
             if(!empty($productInfo)){
                 $this->__addToCard($productInfo);
-                //process FactureItemMetas ( add to session )
+                $response = array('status' => 'success');
             }
-//        }
+        }
+        echo json_encode($response);
     }
 
     /**
@@ -75,8 +81,17 @@ class ProductsController extends ShopAppController {
             'type' => -1,
             'model' => 'Product',
             'foreign_key' => $item['Product']['id'],
-            'description' => $item['Product']['title'],
+            'description' => $this->request->data['description'],
         );
+        //Process FactureItemMeta for this item.
+        if(isset($this->request->data) && !empty($this->request->data)){
+            $factureItem['FactureItemMeta'] = array();
+            foreach($this->request->data['metas'] as $factureItemMeta){
+                array_push($factureItem['FactureItemMeta'], array(
+                    'FactureItemMeta' => $factureItemMeta
+                ));
+            }
+        }
         if(!$this->Session->check('pay.facture')){
             $facture = array(
                 'status' => 0,

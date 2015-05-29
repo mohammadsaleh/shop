@@ -15,6 +15,11 @@ class CategoriesController extends ShopAppController {
  */
 	public $components = array('Paginator');
 
+    public function index($categoryId = null){
+        // get all given categoryId children
+        //
+ }
+
 /**
  * admin_index method
  *
