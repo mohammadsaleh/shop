@@ -30,8 +30,13 @@ class ProductsController extends ShopAppController {
             $product = $this->Product->find('first', array(
                 'conditions' => array('Product.id' => $id),
             ));
+            $categoryPath = $this->Product->Category->getPath($product['Category']['id'], array(
+                'id',
+                'title'
+            ), -1);
             $selectableProperties = $this->Product->Category->getCategoryProperties($product['Category']['id'], true);
             $product['SelectableProperties'] = $selectableProperties;
+            $product['CategoryPath'] = Set::extract('{n}.Category', $categoryPath);
             $this->set('product', $product);
 //            debug($product);die;
         }else{
