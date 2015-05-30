@@ -7,6 +7,7 @@ class ShopComponent extends Component{
     private $__controller = null;
     private $__stringConverter = null;
     private $__productsForLayout = array();
+    private $__categoriesForLayout = array();
 
     public function initialize(Controller $controller){
         $this->__controller = $controller;
@@ -16,9 +17,16 @@ class ShopComponent extends Component{
     public function startup(Controller $controller){
         if (!isset($controller->request->params['admin']) && !isset($controller->request->params['requested'])) {
             $this->__processBlocksData();
+            $this->__getCategories();
         }
     }
 
+    private function __getCategories(){
+        $Product = ClassRegistry::init('Shop.Product');
+        $this->__categoriesForLayout = $Product->Category->find('threaded', array(
+            'recursive' => -1
+        ));
+    }
     private function __processBlocksData(){
         $blocksForLayouts = $this->__controller->Blocks->blocksForLayout;
         foreach($blocksForLayouts as $region => $blocks){
@@ -54,11 +62,7 @@ class ShopComponent extends Component{
     public function beforeRender(Controller $controller){
         if(!empty($this->__productsForLayout)){
             $this->__controller->set('products_for_layout', $this->__productsForLayout);
-        }
-        if (!isset($controller->request->params['admin'])) {
-            $Product = ClassRegistry::init('Shop.Product');
-            $categories_for_layout = $Product->Category->generateTreeList();
-            $this->__controller->set('categories_for_layout', $categories_for_layout);
+            $this->__controller->set('categories_for_layout', $this->__categoriesForLayout);
         }
     }
 }
