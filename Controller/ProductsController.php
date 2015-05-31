@@ -55,9 +55,33 @@ class ProductsController extends ShopAppController {
         $this->autoRender = false;
         $response = array('status' => 'error');
         if($this->request->is('ajax') && $productId){
-            $this->Product->id = $productId;
             $this->Product->recursive = -1;
-            $productInfo = $this->Product->findById($productId);
+            $productInfo = $this->Product->find('first', array(
+                'fields' => array(
+                    'Product.*',
+                    'Attachment.path',
+                ),
+                'conditions' => array('Product.id' => $productId),
+                'joins' => array(
+                    array(
+                        'table' => 'shop_products_attachments',
+                        'alias' => 'ProductAttachment',
+                        'type' => 'LEFT',
+                        'conditions' => array(
+                            'ProductAttachment.product_id = Product.id',
+                            'ProductAttachment.is_index = 1',
+                        )
+                    ),
+                    array(
+                        'table' => 'nodes',
+                        'alias' => 'Attachment',
+                        'type' => 'LEFT',
+                        'conditions' => array(
+                            'Attachment.id = ProductAttachment.attachment_id',
+                        )
+                    )
+                )
+            ));
             if(!empty($productInfo)){
                 $this->__addToCard($productInfo);
                 $response = array('status' => 'success');
@@ -75,20 +99,29 @@ class ProductsController extends ShopAppController {
         $price = $item['Product']['price'];
         $off = $item['Product']['off'] ? $item['Product']['off'] : 0;
         $price = $price - (($price * $off) / 100);
+        $this->request->data = array_merge(array(
+            'description' => '',
+            'metas' => array()
+        ), $this->request->data);
         $factureItem = array(
             'number' => 1,
             'price' => $price,
             'type' => -1,
             'model' => 'Product',
+            'image' => $item['Attachment']['path'],
+            'title' => $item['Product']['title'],
             'foreign_key' => $item['Product']['id'],
             'description' => $this->request->data['description'],
         );
         //Process FactureItemMeta for this item.
         if(isset($this->request->data) && !empty($this->request->data)){
             $factureItem['FactureItemMeta'] = array();
-            foreach($this->request->data['metas'] as $factureItemMeta){
+            foreach($this->request->data['metas'] as $propertyId => $propertyValue){
                 array_push($factureItem['FactureItemMeta'], array(
-                    'FactureItemMeta' => $factureItemMeta
+                    'FactureItemMeta' => array(
+                        'property_id' => $propertyId,
+                        'property_value' => $propertyValue
+                    )
                 ));
             }
         }
