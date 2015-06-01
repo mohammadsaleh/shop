@@ -46,7 +46,7 @@ class ProductsController extends ShopAppController {
     /**
      * @param null $productId
      */
-    public function add_to_card($productId = null){
+    public function add_to_cart($productId = null){
 //        $this->Session->delete('pay');
 //        $this->Session->write('pay.direct', 1);
 //        $this->Session->write('pay.paymentPlugin', 'zarin_pal');
@@ -84,6 +84,20 @@ class ProductsController extends ShopAppController {
             ));
             if(!empty($productInfo)){
                 $this->__addToCard($productInfo);
+                $response = array('status' => 'success');
+            }
+        }
+        echo json_encode($response);
+    }
+    /**
+     * @param null $productId
+     */
+    public function remove_from_cart($productId){
+        $productId = (int)$productId;
+        $this->autoRender = false;
+        $response = array('status' => 'error');
+        if(($this->request->is('ajax') && $productId)){
+            if(classFacture::removeFactureItemsFromSession($productId)){
                 $response = array('status' => 'success');
             }
         }
