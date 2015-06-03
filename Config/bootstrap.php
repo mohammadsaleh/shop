@@ -1,4 +1,7 @@
 <?php
+App::uses('Dropzone', 'Dropzone.Lib');
+Dropzone::load('Shop.default');
+
 Croogo::hookComponent('*', 'Shop.Shop');
 Croogo::hookHelper('*', 'Shop.Shop');
 Croogo::hookBehavior('FactureItem', 'Shop.Shop');
