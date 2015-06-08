@@ -15,11 +15,34 @@ class CategoriesController extends ShopAppController {
  */
 	public $components = array('Paginator');
 
-    public function index($categoryId = null){
+    public function index($categoryId){
         // get all given categoryId children
-        //
+        $this->autoRender = false;
+        $categoriesTree = $this->__getSubCategories($categoryId);
+        if(!empty($categoriesTree['children'])){
+            return $this->render('index');
+        }else{
+            $this->paginate = array(
+                'limit' => 2,
+                'conditions' => array(
+                    'Product.category_id' => $categoryId
+                )
+            );
+            $this->Paginator->settings = $this->paginate;
+            $products = $this->Paginator->paginate($this->Category->Product);
+            echo'<pre />';print_r($products);die;
+            return $this->render('view', $products);
+        }
  }
 
+    private function __getSubCategories($categoryId = null){
+        if($categoryId){
+            $categoriesTree = $this->Category->getAllChildren($categoryId);
+            $categoriesTree = array_shift($categoriesTree);
+            $this->set(compact('categoriesTree'));
+            return $categoriesTree;
+        }
+    }
 /**
  * admin_index method
  *

@@ -83,7 +83,7 @@ class Category extends ShopAppModel {
      * @param null $categoryId
      * @return mixed
      */
-    public function getCategoryProperties($categoryId = null, $selectableProperties = false){
+    public function getCategoryProperties($categoryId = null, $selectableProperties = false, $searchableProperties  = false){
         $allParentsCategoryId = $this->getPath($categoryId);
         $categoryIds = Set::extract('{n}.Category.id', $allParentsCategoryId);
         $this->Property->unbindModel(
@@ -93,6 +93,9 @@ class Category extends ShopAppModel {
         if($selectableProperties){
             $conditions['Property.selectable_on_order'] = true;
         }
+        if($searchableProperties){
+            $conditions['Property.searchable'] = true;
+        }
         $categoryProperties = $this->Property->find('all', array(
             'fields' => array('Property.*', 'Category.id', 'Category.title'),
             'conditions' => $conditions,
@@ -101,4 +104,24 @@ class Category extends ShopAppModel {
         return $categoryProperties;
     }
 
+    public function getAllChildren($categoryId = null){
+        if($categoryId){
+            $parent = $this->find('first', array(
+                'conditions' => array(
+                    'Category.id' => $categoryId
+                ),
+                'recursive' => -1
+            ));
+            return $parentAndChildren = $this->find('threaded', array(
+                'conditions' => array(
+                    'Category.lft >=' => $parent['Category']['lft'],
+                    'Category.rght <=' => $parent['Category']['rght']
+                ),
+                'fields' => array('Category.*'),
+                'recursive' => 0
+            ));
+        }else{
+            return array();
+        }
+    }
 }
