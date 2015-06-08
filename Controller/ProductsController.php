@@ -92,12 +92,12 @@ class ProductsController extends ShopAppController {
     /**
      * @param null $productId
      */
-    public function remove_from_cart($productId){
+    public function remove_from_cart($productId, $forceDelete = false){
         $productId = (int)$productId;
         $this->autoRender = false;
         $response = array('status' => 'error');
         if(($this->request->is('ajax') && $productId)){
-            if(classFacture::removeFactureItemsFromSession($productId)){
+            if(classFacture::removeFactureItemsFromSession($productId, $forceDelete)){
                 $response = array('status' => 'success');
             }
         }
