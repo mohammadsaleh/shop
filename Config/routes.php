@@ -5,6 +5,11 @@ CroogoRouter::connect('/', array(
     'action' => 'index'
 ));
 Router::promote();
+CroogoRouter::connect('/users/users/edit/*', array(
+    'plugin' => 'shop',
+    'controller' => 'shop_users',
+    'action' => 'edit'
+));
 
 CroogoRouter::connect(
     '/shop/category/:id/*',

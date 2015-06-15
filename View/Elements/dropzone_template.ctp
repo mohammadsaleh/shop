@@ -7,20 +7,43 @@ $this->append('script');
 ?>
 <script>
     $(document).ready(function(){
-        var removeIconDom = '<div class="remove-attachment"><?php echo $this->Html->image('Shop.delete.png');?> </div>';
         Dropzone.options.myDropzone = {
             paramName : 'data[Attachment][file]',
             previewTemplate: document.querySelector('#template').innerHTML,
             success: function(file, response){
                 response = JSON.parse(response);
+                var removeIconDom = '<div class="icon-remove-sign remove-attachment"></div>';
+                var highlightDom = '' +
+                    '<div class="set-as-index highlight " data-atachment-id="'+response.data.attachment_id+'">' +
+                    '<div class="icon-ok-sign check-index"></div>' +
+                    'Set Index</div>';
                 var inputDom = '<input id="attachment-'+response.data.attachment_id+'" type="hidden" name="data[Attachment][]" value="'+response.data.attachment_id+'" />';
                 var inputHidden = Dropzone.createElement(inputDom);
-                $('.dz-preview').append(removeIconDom);
+
+                removeIconDom = Dropzone.createElement(removeIconDom);
+                highlightDom = Dropzone.createElement(highlightDom);
+
+                file.previewElement.appendChild(removeIconDom);
+                file.previewElement.appendChild(highlightDom);
                 file.previewElement.appendChild(inputHidden);
             }
         }
         $('body').on('click', 'div.remove-attachment', function(){
             $(this).parent("div").remove();
+        });
+        $('body').on('click', 'div.set-as-index', function(){
+            var attachmentId = $(this).attr('data-attachment-id');
+            var currentElem = $(this);
+            $.ajax({
+                url: "<?php echo Router::url(array('plugin' => 'shop', 'controller' => 'products', 'action' => 'toggle_image_index', $this->request->data['Product']['id'])); ?>/" + attachmentId,
+                success: function(response){
+                    response = JSON.parse(response);
+                    if (response.status == 'success') {
+                        $('.highlight.current-index').removeClass('current-index');
+                        currentElem.addClass('current-index');
+                    }
+                }
+            });
         });
     });
 </script>
@@ -33,15 +56,55 @@ if(!empty($attachments)){
 }
 ?>
 <style>
-    .remove-attachment{
+    .dropzone {
+        padding: 20px 4px;
+    }
+    .remove-attachment {
         position: absolute;
-        top: 15px;
-        left: 15px;
+        top: -6px;
+        left: 53px;
         z-index: 99;
+        color: #d60000;
+        font-size: 16px;
         cursor: pointer !important;
         display: none;
     }
-    .dropzone .dz-preview:hover .remove-attachment{
+    .highlight{
+        width: 100%;
+        background-color: rgba(178, 178, 178, 0.55);
+        height: 30px;
+        position: absolute;
+        top: 34px;
+        left: 0;
+        z-index: 90;
+        border-radius: 0 0 2px 2px;
+        display: none;
+        font-size: 9px;
+        text-align: center;
+        padding: 8px 0;
+        color: white;
+    }
+    .highlight .check-index{
+        position: absolute;
+        top: -7px;
+        left: 23px;
+        z-index: 99;
+        font-size: 19px;
+        cursor: pointer !important;
+        color: white;
+        /*display: none;*/
+    }
+    .highlight.current-index{
+        background-color: rgba(13, 205, 0, 0.55);
+        display: block;
+    }
+    .dropzone .dz-preview {
+        border: 1px solid rgb(229, 212, 228);
+        padding: 2px;
+        border-radius: 4px;
+    }
+    .dropzone .dz-preview:hover .remove-attachment,
+    .dropzone .dz-preview:hover .highlight{
         display: block;
     }
 </style>
@@ -64,7 +127,11 @@ if(!empty($attachments)){
             <div class="dz-details">
                 <div class="dz-size" data-dz-size=""><strong>59.6</strong> KB</div>
             </div>
-            <div class="remove-attachment"><?php echo $this->Html->image('Shop.delete.png');?> </div>
+            <div class="icon-remove-sign remove-attachment"></div>
+            <div class="set-as-index highlight <?php echo $attachment['ShopProductsAttachment']['is_index'] ? 'current-index' : '';?>" data-attachment-id="<?php echo $attachment['id'];?>">
+                <div class="icon-ok-sign check-index"></div>
+                <?php echo $attachment['ShopProductsAttachment']['is_index'] ? __d('shop', 'Current Index') : __d('shop', 'Set Index')?>
+            </div>
             <input id="attachment-<?php echo $attachment['id']; ?>" type="hidden" name="data[Attachment][]" value="<?php echo $attachment['id']; ?>">
         </div>
     <?php
