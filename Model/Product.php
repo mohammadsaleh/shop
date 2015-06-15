@@ -120,9 +120,10 @@ class Product extends ShopAppModel {
         }else{
             // set index image as path in Attachment array
             foreach($results as &$result){
-                if(isset($result['Attachment'])){
-                    foreach($result['Attachment'] as $attachment){
-                        $result['Attachment']['path'] = '';
+                if(isset($result['Attachment']) && !empty($result['Attachment'])){
+                    $attachments = $result['Attachment'];
+                    $result['Attachment']['path'] = $result['Attachment'][0]['path'];
+                    foreach($attachments as $attachment){
                         if($attachment['ShopProductsAttachment']['is_index']){
                             $result['Attachment']['path'] = $attachment['path'];
                             break;

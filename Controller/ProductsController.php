@@ -22,6 +22,8 @@ class ProductsController extends ShopAppController {
 //        $this->Security->csrfCheck = false;
     }
     public function index(){
+//        debug($this->Session->delete('pay'));exit;
+//        debug($this->Session->read('pay'));exit;
         $products = $this->Product->find('all');
 //        debug($products);die;
         $this->set('products', $products);
@@ -56,32 +58,8 @@ class ProductsController extends ShopAppController {
         $this->autoRender = false;
         $response = array('status' => 'error');
         if($this->request->is('ajax') && $productId){
-            $this->Product->recursive = -1;
             $productInfo = $this->Product->find('first', array(
-                'fields' => array(
-                    'Product.*',
-                    'Attachment.path',
-                ),
                 'conditions' => array('Product.id' => $productId),
-                'joins' => array(
-                    array(
-                        'table' => 'shop_products_attachments',
-                        'alias' => 'ProductAttachment',
-                        'type' => 'LEFT',
-                        'conditions' => array(
-                            'ProductAttachment.product_id = Product.id',
-                            'ProductAttachment.is_index = 1',
-                        )
-                    ),
-                    array(
-                        'table' => 'nodes',
-                        'alias' => 'Attachment',
-                        'type' => 'LEFT',
-                        'conditions' => array(
-                            'Attachment.id = ProductAttachment.attachment_id',
-                        )
-                    )
-                )
             ));
             if(!empty($productInfo)){
                 $this->__addToCard($productInfo);
@@ -96,19 +74,17 @@ class ProductsController extends ShopAppController {
     public function remove_from_cart($productId, $forceDelete = false){
         $productId = (int)$productId;
         $this->autoRender = false;
-        debug($this->Session->read('pay'));exit;
         $response = array('status' => 'error');
+        $price = CakeSession::read('pay.facture.FactureItem.' . $productId . '.price');
         if(($this->request->is('ajax') && $productId)){
-            if($removeStatus = classFacture::removeFactureItemsFromSession($productId, $forceDelete)){
-                if($removeStatus !== false){
-                    $response = array(
-                        'status' => 'success',
-                        'product' => [
-                            'price' => $removeStatus,
-                            'itemPrice' => ''
-                        ],
-                    );
-                }
+            if( ($removeStatus = classFacture::removeFactureItemsFromSession($productId, $forceDelete) ) !== false){
+                $response = array(
+                    'status' => 'success',
+                    'product' => [
+                        'price' => $price,
+                        'itemTotalPrice' => $removeStatus
+                    ],
+                );
             }
         }
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
