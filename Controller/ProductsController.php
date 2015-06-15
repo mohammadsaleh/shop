@@ -23,6 +23,7 @@ class ProductsController extends ShopAppController {
     }
     public function index(){
         $products = $this->Product->find('all');
+//        debug($products);die;
         $this->set('products', $products);
     }
     public function view($id = null){
@@ -129,6 +130,8 @@ class ProductsController extends ShopAppController {
         $factureItem = array(
             'number' => 1,
             'price' => $price,
+            'base_price' => $item['Product']['price'],
+            'off' => $item['Product']['off'],
             'type' => -1,
             'model' => 'Product',
             'image' => $item['Attachment']['path'],
@@ -270,5 +273,23 @@ class ProductsController extends ShopAppController {
         }
         $this->Session->setFlash(__d('croogo', '%s was not deleted', __d('shop', 'Product')), 'default', array('class' => 'error'));
         return $this->redirect(array('action' => 'index'));
+    }
+
+    public function admin_toggle_image_index($productId = null, $attachmentId = null){
+        $this->autoRender = false;
+        $response = array('status' => 'success');
+        if($this->request->is('ajax')){
+            if($productId && $attachmentId){
+                $conditions = array('product_id' => $productId);
+                $this->Product->update_attachment(array('is_index' => 0), $conditions);
+                $conditions['attachment_id'] = $attachmentId;
+                $this->Product->update_attachment(array('is_index' => 1), $conditions);
+                echo json_encode($response);
+                return;
+            }
+        }
+        $response['status'] = 'error';
+        echo json_encode($response);
+        return;
     }
 }

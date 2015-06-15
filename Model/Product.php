@@ -54,7 +54,7 @@ class Product extends ShopAppModel {
             'joinTable' => 'shop_products_attachments',
             'foreignKey' => 'product_id',
             'associationForeignKey' => 'attachment_id',
-            'unique' => false,
+            'unique' => true,
             'conditions' => '',
             'fields' => 'id, title, slug, mime_type, path, type',
             'order' => '',
@@ -117,8 +117,39 @@ class Product extends ShopAppModel {
                     }
                 }
             }
+        }else{
+            // set index image as path in Attachment array
+            foreach($results as &$result){
+                if(isset($result['Attachment'])){
+                    foreach($result['Attachment'] as $attachment){
+                        $result['Attachment']['path'] = '';
+                        if($attachment['ShopProductsAttachment']['is_index']){
+                            $result['Attachment']['path'] = $attachment['path'];
+                            break;
+                        }
+                    }
+                }
+            }
         }
-//        debug($results);
         return $results;
+    }
+    
+    public function update_attachment($data = array(), $where = array()){
+        if(!empty($data)){
+            $setValues = array();
+            $whereValues = array();
+            foreach($data as $key => $value){
+                $setValues[] = $key . ' = ' . $value;
+            }
+            foreach($where as $key => $value){
+                $whereValues[] = $key . ' = ' . $value;
+            }
+            $sql = '
+                UPDATE '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
+                SET '. implode(',', $setValues) .'
+                WHERE '. implode(' AND ', $whereValues) .'
+           ';
+            $this->query($sql);
+        }
     }
 }
