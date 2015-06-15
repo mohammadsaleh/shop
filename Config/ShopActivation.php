@@ -107,7 +107,7 @@ class ShopActivation{
             array(
                 'Block' => array(
                     'region_id' => $this->regions['category_group_products'],
-                    'title' => 'جدیدترین محصولات صفحه دسته بندی ها',
+                    'title' => 'جدیدترین محصولات',
                     'alias' => 'latest_products_category_page',
                     'body' => '[p:latest_products_category_page limit="3" order="product.id DESC" element="Shop.latest_products_body"]',
                     'element' => 'Shop.category_latest_products_element',
