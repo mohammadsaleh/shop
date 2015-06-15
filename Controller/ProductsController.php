@@ -95,13 +95,22 @@ class ProductsController extends ShopAppController {
     public function remove_from_cart($productId, $forceDelete = false){
         $productId = (int)$productId;
         $this->autoRender = false;
+        debug($this->Session->read('pay'));exit;
         $response = array('status' => 'error');
         if(($this->request->is('ajax') && $productId)){
-            if(classFacture::removeFactureItemsFromSession($productId, $forceDelete)){
-                $response = array('status' => 'success');
+            if($removeStatus = classFacture::removeFactureItemsFromSession($productId, $forceDelete)){
+                if($removeStatus !== false){
+                    $response = array(
+                        'status' => 'success',
+                        'product' => [
+                            'price' => $removeStatus,
+                            'itemPrice' => ''
+                        ],
+                    );
+                }
             }
         }
-        echo json_encode($response);
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
     /**
      * @param $item
