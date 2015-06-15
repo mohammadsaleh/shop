@@ -14,7 +14,7 @@ $this->append('script');
                 response = JSON.parse(response);
                 var removeIconDom = '<div class="icon-remove-sign remove-attachment"></div>';
                 var highlightDom = '' +
-                    '<div class="set-as-index highlight " data-atachment-id="'+response.data.attachment_id+'">' +
+                    '<div class="set-as-index highlight ">' +
                     '<div class="icon-ok-sign check-index"></div>' +
                     'Set Index</div>';
                 var inputDom = '<input id="attachment-'+response.data.attachment_id+'" type="hidden" name="data[Attachment][]" value="'+response.data.attachment_id+'" />';
@@ -22,6 +22,7 @@ $this->append('script');
 
                 removeIconDom = Dropzone.createElement(removeIconDom);
                 highlightDom = Dropzone.createElement(highlightDom);
+                highlightDom.setAttribute('data-attachment-id', response.data.attachment_id);
 
                 file.previewElement.appendChild(removeIconDom);
                 file.previewElement.appendChild(highlightDom);
@@ -32,7 +33,8 @@ $this->append('script');
             $(this).parent("div").remove();
         });
         $('body').on('click', 'div.set-as-index', function(){
-            var attachmentId = $(this).attr('data-attachment-id');
+            var attachmentId = $(this).data('attachment-id');
+            console.log(attachmentId);
             var currentElem = $(this);
             $.ajax({
                 url: "<?php echo Router::url(array('plugin' => 'shop', 'controller' => 'products', 'action' => 'toggle_image_index', $this->request->data['Product']['id'])); ?>/" + attachmentId,

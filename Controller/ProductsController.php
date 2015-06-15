@@ -22,10 +22,7 @@ class ProductsController extends ShopAppController {
 //        $this->Security->csrfCheck = false;
     }
     public function index(){
-//        debug($this->Session->delete('pay'));exit;
-//        debug($this->Session->read('pay'));exit;
         $products = $this->Product->find('all');
-//        debug($products);die;
         $this->set('products', $products);
     }
     public function view($id = null){
@@ -259,6 +256,7 @@ class ProductsController extends ShopAppController {
                 $conditions = array('product_id' => $productId);
                 $this->Product->update_attachment(array('is_index' => 0), $conditions);
                 $conditions['attachment_id'] = $attachmentId;
+                $this->Product->insert_attachmet($productId, $attachmentId);
                 $this->Product->update_attachment(array('is_index' => 1), $conditions);
                 echo json_encode($response);
                 return;

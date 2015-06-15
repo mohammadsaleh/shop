@@ -54,7 +54,7 @@ class Product extends ShopAppModel {
             'joinTable' => 'shop_products_attachments',
             'foreignKey' => 'product_id',
             'associationForeignKey' => 'attachment_id',
-            'unique' => true,
+            'unique' => false,
             'conditions' => '',
             'fields' => 'id, title, slug, mime_type, path, type',
             'order' => '',
@@ -76,12 +76,8 @@ class Product extends ShopAppModel {
                 unset($data['ProductMeta'][$key]);
             }
         }
-        //Process product images, using dropzone plugin
-//        if(CakeSession::check('Attachments')){
-//            $data['Attachment'] = CakeSession::read('Attachments');
-//        }
+        $this->__deleteAttachment($data);
         $result = parent::saveAssociated($data);
-//        CakeSession::delete('Attachments');
         return $result;
     }
 
@@ -134,7 +130,28 @@ class Product extends ShopAppModel {
         }
         return $results;
     }
-    
+
+    private function __deleteAttachment(&$data = array()){
+        if(isset($data['Attachment'])){
+            $attachmentIds = $data['Attachment'];
+            $sql = '
+                DELETE FROM '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
+                WHERE
+                    product_id = '.$data['Product']['id'].'
+                    AND attachment_id NOT IN ('. implode(',', $attachmentIds) .')
+            ';
+            $this->query($sql);
+            $sql = '
+                SELECT attachment_id
+                FROM '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
+                WHERE
+                    product_id = '.$data['Product']['id'].'
+            ';
+            $attachmentIds = $this->query($sql);
+            $attachmentIds = Set::extract('/shop_products_attachments/attachment_id', $attachmentIds);
+            $data['Attachment'] = array_diff($data['Attachment'], $attachmentIds);
+        }
+    }
     public function update_attachment($data = array(), $where = array()){
         if(!empty($data)){
             $setValues = array();
@@ -150,7 +167,27 @@ class Product extends ShopAppModel {
                 SET '. implode(',', $setValues) .'
                 WHERE '. implode(' AND ', $whereValues) .'
            ';
+            return $this->query($sql);
+        }
+        return false;
+    }
+    public function insert_attachmet($productId, $attachmentId){
+        $sql = '
+            SELECT id
+            FROM '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
+            WHERE
+                product_id = '.$productId.'
+                AND attachment_id = '.$attachmentId.'
+        ';
+        $result = $this->query($sql);
+        if(empty($result)){
+            $sql = '
+                INSERT INTO '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
+                (product_id, attachment_id)
+                VALUES ('.$productId.', '.$attachmentId.')
+            ';
             $this->query($sql);
         }
+        return true;
     }
 }
