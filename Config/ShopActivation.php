@@ -1,45 +1,21 @@
 <?php
 class ShopActivation{
 
+    public $regions = array(
+        'index_product_center' => 'index_product_center',
+        'category_group_products' => 'category_group_products',
+        'category_side_panel' => 'category_side_panel',
+        'index_top_slider' => 'index_top_slider',
+    );
+    public $blocks = array();
+
     public function beforeActivation(&$controller) {
         return true;
     }
     public function onActivation(Controller $controller) {
-        // Add acl
-        $controller->Croogo->addAco('Shop/Products/index', array('admin', 'registered', 'public'));
-        $controller->Croogo->addAco('Shop/Products/view', array('admin', 'registered', 'public'));
-        $controller->Croogo->addAco('Shop/Products/add_to_cart', array('admin', 'registered', 'public'));
-        $controller->Croogo->addAco('Shop/Categories/index', array('admin', 'registered', 'public'));
-
-        $Block = ClassRegistry::init('Blocks.Block');
-        $Block->create();
-        $data = array(
-            array(
-                'Block' => array(
-                    'region_id' => '4',
-                    'title' => 'پرفروش ترین محصولات تست',
-                    'alias' => 'most_popular',
-                    'body' => '[Shop.mostPopularProducts limit="4"][element:latest_products_body]',
-                    'element' => 'Shop.latest_products_element',
-                    'params' => 'enclosure=false',
-                    'show_title' => 1,
-                    'status' => 1,
-                )
-            ),
-            array(
-                'Block' => array(
-                    'region_id' => '4',
-                    'title' => 'جدیدترین محصولات',
-                    'alias' => 'latest_products',
-                    'body' => '[p:lastest_product_index order="Product.id DESC" limit="4" element="Shop.latest_products_body" options1="1254"]',
-                    'element' => 'Shop.latest_products_element',
-                    'params' => 'enclosure=false',
-                    'show_title' => 1,
-                    'status' => 1,
-                )
-            )
-        );
-        $Block->saveAll($data);
+        $this->addPermissions($controller);
+        $this->addRegions();
+        $this->addBlocks();
         return true;
     }
     public function beforeDeactivation(&$controller) {
@@ -47,22 +23,126 @@ class ShopActivation{
     }
     //----------------------------------------------------------
     public function onDeactivation(Controller $controller) {
-        // Remove acl
         $controller->Croogo->removeAco('Shop');
+        $this->removeBlocks();
+        $this->removeRegions();
+        return true;
+    }
 
-        $Block = ClassRegistry::init('Blocks.Block');
-        $block1 = $Block->findByAlias('most_popular', array('id'));
-        $block2 = $Block->findByAlias('latest_products', array('id'));
-        $ids = array();
-        if(!empty($block1)){
-            array_push($ids, $block1['Block']['id']);
+
+    public function addRegions(){
+        $Region = ClassRegistry::init('Blocks.Region');
+        foreach($this->regions as $alias => $title){
+            $Region->Create();
+            $Region->save(array(
+                'Region' => array(
+                    'title' => $title,
+                    'alias' => $alias
+                )
+            ));
+            $this->regions[$alias] = $Region->id;
         }
-        if(!empty($block2)){
-            array_push($ids, $block2['Block']['id']);
+    }
+    public function addBlocks(){
+        $Block = ClassRegistry::init('Blocks.Block');
+        $blocks = $this->getBlocks();
+        $Block->create();
+        $Block->saveAll($blocks);
+    }
+    public function addPermissions(&$controller){
+        $controller->Croogo->addAco('Shop/Products/index', array('admin', 'registered', 'public'));
+        $controller->Croogo->addAco('Shop/Products/view', array('admin', 'registered', 'public'));
+        $controller->Croogo->addAco('Shop/Products/add_to_cart', array('admin', 'registered', 'public'));
+        $controller->Croogo->addAco('Shop/Categories/index', array('admin', 'registered', 'public'));
+    }
+    
+    public function removeBlocks(){
+        $Block = ClassRegistry::init('Blocks.Block');
+        $blocks = $this->getBlocks();
+        $ids = array();
+        foreach($blocks as $block){
+            $result = $Block->findByAlias($block['Block']['alias'], array('id'));
+            if(!empty($result)){
+                array_push($ids, $result['Block']['id']);
+            }
         }
         if(!empty($ids)){
             $Block->deleteAll(array('Block.id' => $ids));
         }
-        return true;
+    }
+    public function removeRegions(){
+        $Region = ClassRegistry::init('Blocks.Region');
+        $aliases = array_keys($this->regions);
+        $Region->deleteAll(array('Region.alias' => $aliases));
+    }
+
+    public function getBlocks(){
+        return array(
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['index_product_center'],
+                    'title' => 'پرفروش ترین محصولات',
+                    'alias' => 'most_popular',
+                    'body' => '[Shop.mostPopularProducts limit="4"][element:latest_products_body]',
+                    'element' => 'Shop.latest_products_element',
+                    'params' => 'enclosure=false',
+                    'show_title' => 1,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['index_product_center'],
+                    'title' => 'جدیدترین محصولات',
+                    'alias' => 'latest_products',
+                    'body' => '[p:lastest_product_index order="Product.id DESC" limit="4" element="Shop.latest_products_body" options1="1254"]',
+                    'element' => 'Shop.latest_products_element',
+                    'params' => 'enclosure=false',
+                    'show_title' => 1,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['category_group_products'],
+                    'title' => 'جدیدترین محصولات صفحه دسته بندی ها',
+                    'alias' => 'latest_products_category_page',
+                    'body' => '[p:latest_products_category_page limit="3" order="product.id DESC" element="Shop.latest_products_body"]',
+                    'element' => 'Shop.category_latest_products_element',
+                    'params' => 'enclosure=false',
+                    'show_title' => 1,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['category_side_panel'],
+                    'title' => 'دسته بندی های سایت',
+                    'alias' => 'sidebar_categories',
+                    'body' => '[categories:category_tree_panel]',
+                    'element' => '',
+                    'params' => 'enclosure=false',
+                    'show_title' => 0,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['index_top_slider'],
+                    'title' => 'اسلایدر',
+                    'alias' => 'tshop_slider',
+                    'body' => '[AparnicSlider:tshop_slider slug="tshop_slider"]',
+                    'element' => 'AparnicSlider.element_empty',
+                    'params' => 'enclosure=false',
+                    'show_title' => 0,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+        );
     }
 }

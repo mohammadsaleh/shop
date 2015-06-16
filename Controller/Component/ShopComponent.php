@@ -60,9 +60,7 @@ class ShopComponent extends Component{
     }
 
     public function beforeRender(Controller $controller){
-        if(!empty($this->__productsForLayout)){
-            $this->__controller->set('products_for_layout', $this->__productsForLayout);
-            $this->__controller->set('categories_for_layout', $this->__categoriesForLayout);
-        }
+        $this->__controller->set('products_for_layout', $this->__productsForLayout);
+        $this->__controller->set('categories_for_layout', $this->__categoriesForLayout);
     }
 }

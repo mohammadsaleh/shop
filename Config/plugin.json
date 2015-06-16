@@ -2,13 +2,16 @@
 	"name": "Shop",
 	"description": "Shop plugin",
 
-	"author": "Mohammad Saleh",
-	"authorEmail": "mSaleh@gmail.com",
-	"authorUrl": "http://example.com",
+	"author": "MohammadSaleh",
+	"authorEmail": "mohammadsaleh.sayari@gmail.com",
+	"authorUrl": "",
 
 	"dependencies": {
 		"plugins": [
-			"Payment"
+			"Payment",
+            "Shortcodes",
+            "Dropzone",
+            "AparnicSlider"
 		]
 	}
 }
