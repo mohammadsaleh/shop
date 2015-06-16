@@ -3,7 +3,7 @@ class ShopActivation{
 
     public $regions = array(
         'index_product_center' => 'index_product_center',
-        'category_group_products' => 'category_group_products',
+        'category_page' => 'category_page',
         'category_side_panel' => 'category_side_panel',
         'index_top_slider' => 'index_top_slider',
     );
@@ -100,32 +100,6 @@ class ShopActivation{
                     'element' => 'Shop.latest_products_element',
                     'params' => 'enclosure=false',
                     'show_title' => 1,
-                    'status' => 1,
-                    'visibility_roles' => '',
-                )
-            ),
-            array(
-                'Block' => array(
-                    'region_id' => $this->regions['category_group_products'],
-                    'title' => 'جدیدترین محصولات',
-                    'alias' => 'latest_products_category_page',
-                    'body' => '[p:latest_products_category_page limit="3" order="product.id DESC" element="Shop.latest_products_body"]',
-                    'element' => 'Shop.category_latest_products_element',
-                    'params' => 'enclosure=false',
-                    'show_title' => 1,
-                    'status' => 1,
-                    'visibility_roles' => '',
-                )
-            ),
-            array(
-                'Block' => array(
-                    'region_id' => $this->regions['category_side_panel'],
-                    'title' => 'دسته بندی های سایت',
-                    'alias' => 'sidebar_categories',
-                    'body' => '[categories:category_tree_panel]',
-                    'element' => '',
-                    'params' => 'enclosure=false',
-                    'show_title' => 0,
                     'status' => 1,
                     'visibility_roles' => '',
                 )

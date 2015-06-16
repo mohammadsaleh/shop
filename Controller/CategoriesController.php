@@ -18,18 +18,94 @@ class CategoriesController extends ShopAppController {
     public function index($categoryId){
         // get all given categoryId children
         $categoriesTree = $this->__getSubCategories($categoryId);
+        $categoriesId = $this->__getCategoriesId($categoriesTree);
         if(empty($categoriesTree['children'])){
+            // paginate mahsoolate in category
+            // get searchables properties for using in filter
             $this->paginate = array(
                 'limit' => 3,
                 'conditions' => array(
-                    'Product.category_id' => $categoryId
+                    'Product.category_id' => $categoriesId
                 )
             );
             $this->Paginator->settings = $this->paginate;
             $products = $this->Paginator->paginate($this->Category->Product);
             $this->set(compact('products'));
             return $this->render('Shop.view');
+        }else{
+            // get jadidtarin kala ha dar zir majmooeye in category
+            // get porforooshtarin kala ha dar zir majmooeye in category
+            $latestProducts = $this->__getLatestProducts($categoriesId, 10);
+            $bestsellingProducts = $this->__getBestsellingProducts($categoriesId, 10);
+            $this->set(compact('latestProducts', 'bestsellingProducts'));
+
         }
+    }
+
+    private function __getBestsellingProducts($categoriesId = array(), $limit = 10){
+        $this->Category->Product->virtualFields = array('count_sells' => 'COUNT(FactureItem.id)');
+        $bestsellingProducts = $this->Category->Product->find('all', array(
+            'fields' => array('Product.*', 'Attachment.path', 'count_sells'),
+            'conditions' => array(
+                'Product.category_id' => $categoriesId
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'facture_items',
+                    'alias' => 'FactureItem',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'FactureItem.model = "Product"',
+                        'FactureItem.foreign_key = Product.id'
+                    )
+                ),
+                array(
+                    'table' => 'shop_products_attachments',
+                    'alias' => 'ProductAttachment',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'ProductAttachment.product_id = Product.id',
+                        'ProductAttachment.is_index = 1',
+                    )
+                ),
+                array(
+                    'table' => 'nodes',
+                    'alias' => 'Attachment',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'Attachment.id = ProductAttachment.attachment_id',
+                    )
+                )
+            ),
+            'group' => array('Product.id HAVING COUNT(FactureItem.id) > 0'),
+            'order' => array('count_sells DESC'),
+            'limit' => $limit
+        ));
+//        debug($bestsellingProducts);die;
+        return $bestsellingProducts;
+    }
+
+    private function __getLatestProducts($categoriesId = array(), $limit = 10){
+        $latestCategoryProducts = $this->Category->Product->find('all', array(
+            'conditions' => array(
+                'Product.category_id' => $categoriesId
+            ),
+            'order' => array('Product.id' => 'DESC'),
+            'limit' => $limit
+        ));
+        return $latestCategoryProducts;
+    }
+
+    private function __getCategoriesId($categoriesTree, $depth = 0, &$ids = array()){
+        if(!empty($categoriesTree)){
+            array_push($ids, $categoriesTree['Category']['id']);
+        }
+        if(!empty($categoriesTree['children'])){
+            foreach($categoriesTree['children'] as $child){
+                $this->__getCategoriesId($child, $depth + 1, $ids);
+            }
+        }
+        return $ids;
     }
 
     private function __getSubCategories($categoryId = null){
