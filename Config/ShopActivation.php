@@ -6,6 +6,7 @@ class ShopActivation{
         'category_page' => 'category_page',
         'category_side_panel' => 'category_side_panel',
         'index_top_slider' => 'index_top_slider',
+        'index_product_bottom' => 'index_product_bottom',
     );
     public $blocks = array();
 
@@ -117,6 +118,21 @@ class ShopActivation{
                     'visibility_roles' => '',
                 )
             ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['index_product_bottom'],
+                    'title' => 'Trusted Seller 500+',
+                    'alias' => 'parallax',
+                    'body' => 'Lorem ipsum dolor sit amet consectetuer
+                    [Shop.parallax_image attachment_id=""]',
+                    'element' => 'Shop.parallax_element',
+                    'params' => 'enclosure=false',
+                    'show_title' => 1,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+
         );
     }
 }
