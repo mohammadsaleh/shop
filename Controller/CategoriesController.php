@@ -23,7 +23,7 @@ class CategoriesController extends ShopAppController {
             // paginate mahsoolate in category
             // get searchables properties for using in filter
             $this->paginate = array(
-                'limit' => 3,
+                'limit' => 10,
                 'conditions' => array(
                     'Product.category_id' => $categoriesId
                 )
