@@ -30,7 +30,8 @@ class ShopShortcodes{
 
     public function parallax_image($options = null, $body = null, $shortcodeTag = null, $instance = null){
         $options = array_merge(array(
-            'attachment_id' => null
+            'attachment_id' => null,
+            'block_alias' => time()
         ), $options);
         if($options['attachment_id']){
             $Attachment = ClassRegistry::init('FileManager.Attachment');
@@ -43,7 +44,8 @@ class ShopShortcodes{
                 )
             ));
             if(!empty($image)){
-                $instance->set('parallaxImageUrl', $instance->request->webroot.$image['Attachment']['path']);
+                $imagePath = $instance->request->webroot.$image['Attachment']['path'];
+                $instance->set('parallaxImageUrl_'.$options['block_alias'], $imagePath);
             }
         }
     }

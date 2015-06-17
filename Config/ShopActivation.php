@@ -6,7 +6,6 @@ class ShopActivation{
         'category_page' => 'category_page',
         'category_side_panel' => 'category_side_panel',
         'index_top_slider' => 'index_top_slider',
-        'index_product_bottom' => 'index_product_bottom',
     );
     public $blocks = array();
 
@@ -82,10 +81,10 @@ class ShopActivation{
             array(
                 'Block' => array(
                     'region_id' => $this->regions['index_product_center'],
-                    'title' => 'پرفروش ترین محصولات',
-                    'alias' => 'most_popular',
-                    'body' => '[Shop.mostPopularProducts limit="4"][element:carousel_product_body]',
-                    'element' => 'Shop.carousel_product_element',
+                    'title' => 'جدیدترین محصولات',
+                    'alias' => 'latest_products',
+                    'body' => '[p:lastest_product_index order="Product.id DESC" limit="10" element="Shop.carousel_product_body" options1="1254"]',
+                    'element' => 'Shop.carousel_index_product_element',
                     'params' => 'enclosure=false',
                     'show_title' => 1,
                     'status' => 1,
@@ -95,10 +94,40 @@ class ShopActivation{
             array(
                 'Block' => array(
                     'region_id' => $this->regions['index_product_center'],
-                    'title' => 'جدیدترین محصولات',
-                    'alias' => 'latest_products',
-                    'body' => '[p:lastest_product_index order="Product.id DESC" limit="4" element="Shop.carousel_product_body" options1="1254"]',
-                    'element' => 'Shop.carousel_product_element',
+                    'title' => 'FREE INTERNATIONAL SHIPPING! Get Free Shipping Coupons',
+                    'alias' => 'parallax_1',
+                    'body' => '<h2 class="uppercase">FREE INTERNATIONAL SHIPPING! Get Free Shipping Coupons</h2>
+<h3> Energistically develop parallel mindshare rather than premier deliverables. </h3>
+[Shop.parallax_image attachment_id="102" block_alias="parallax_1"]',
+                    'element' => 'Shop.parallax_element',
+                    'params' => 'enclosure=false',
+                    'show_title' => 1,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['index_product_center'],
+                    'title' => 'پرفروش ترین محصولات',
+                    'alias' => 'most_popular',
+                    'body' => '[Shop.mostPopularProducts limit="10"][element:carousel_product_body]',
+                    'element' => 'Shop.carousel_index_product_element',
+                    'params' => 'enclosure=false',
+                    'show_title' => 1,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['index_product_center'],
+                    'title' => 'Trusted Seller 500+',
+                    'alias' => 'parallax_2',
+                    'body' => '<h5 class="parallaxSubtitle">
+Lorem ipsum dolor sit amet consectetuer</h5>
+                    [Shop.parallax_image attachment_id="101" block_alias="parallax_2"]',
+                    'element' => 'Shop.parallax_element',
                     'params' => 'enclosure=false',
                     'show_title' => 1,
                     'status' => 1,
@@ -118,21 +147,6 @@ class ShopActivation{
                     'visibility_roles' => '',
                 )
             ),
-            array(
-                'Block' => array(
-                    'region_id' => $this->regions['index_product_bottom'],
-                    'title' => 'Trusted Seller 500+',
-                    'alias' => 'parallax',
-                    'body' => 'Lorem ipsum dolor sit amet consectetuer
-                    [Shop.parallax_image attachment_id=""]',
-                    'element' => 'Shop.parallax_element',
-                    'params' => 'enclosure=false',
-                    'show_title' => 1,
-                    'status' => 1,
-                    'visibility_roles' => '',
-                )
-            ),
-
         );
     }
 }
