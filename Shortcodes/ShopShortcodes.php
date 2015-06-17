@@ -28,4 +28,24 @@ class ShopShortcodes{
 //        return $instance->element($options['element'], compact('productList'));
     }
 
+    public function parallax_image($options = null, $body = null, $shortcodeTag = null, $instance = null){
+        $options = array_merge(array(
+            'attachment_id' => null
+        ), $options);
+        if($options['attachment_id']){
+            $Attachment = ClassRegistry::init('FileManager.Attachment');
+            $image = $Attachment->find('first', array(
+                'recursive' => -1,
+                'fields' => array('Attachment.path'),
+                'conditions' => array(
+                    'Attachment.id' => $options['attachment_id'],
+                    'Attachment.type' => 'attachment',
+                )
+            ));
+            if(!empty($image)){
+                $instance->set('parallaxImageUrl', $instance->request->webroot.$image['Attachment']['path']);
+            }
+        }
+    }
+
 }
