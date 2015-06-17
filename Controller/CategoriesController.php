@@ -30,7 +30,8 @@ class CategoriesController extends ShopAppController {
             );
             $this->Paginator->settings = $this->paginate;
             $products = $this->Paginator->paginate($this->Category->Product);
-            $this->set(compact('products'));
+            $categoryProperties = $this->Category->getCategoryProperties($categoryId, $selectableProperties = false, $searchableProperties  = true);
+            $this->set(compact('products', 'categoryProperties'));
             return $this->render('Shop.view');
         }else{
             // get jadidtarin kala ha dar zir majmooeye in category
