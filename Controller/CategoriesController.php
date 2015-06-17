@@ -14,24 +14,40 @@ class CategoriesController extends ShopAppController {
  * @var array
  */
 	public $components = array('Paginator');
+    public function beforeFilter(){
+        parent::beforeFilter();
+        $this->Components->disable('Security');
+//        $this->Security->unlockedActions[] = 'admin_get_category_properties';
+//        $this->Security->validatePost = false;
+//        $this->Security->csrfCheck = false;
+    }
 
     public function index($categoryId){
         // get all given categoryId children
         $categoriesTree = $this->__getSubCategories($categoryId);
         $categoriesId = $this->__getCategoriesId($categoriesTree);
         if(empty($categoriesTree['children'])){
+            $conditions = array('Product.category_id' => $categoriesId);
+            if(!empty($this->request->query)){
+                if(isset($this->request->query['minPrice']) && is_numeric($this->request->query['minPrice'])){
+                    $minPrice = $this->request->query['minPrice'];
+                    $conditions['(Product.price * (1 - (Product.off/100)) ) >= '] = $minPrice;
+                }
+                if(isset($this->request->query['maxPrice']) && is_numeric($this->request->query['maxPrice'])){
+                    $maxPrice = $this->request->query['maxPrice'];
+                    $conditions['(Product.price * (1 - (Product.off/100)) ) <= '] = $maxPrice;
+                }
+            }
             // paginate mahsoolate in category
             // get searchables properties for using in filter
             $this->paginate = array(
                 'limit' => 10,
-                'conditions' => array(
-                    'Product.category_id' => $categoriesId
-                )
+                'conditions' => $conditions,
             );
             $this->Paginator->settings = $this->paginate;
             $products = $this->Paginator->paginate($this->Category->Product);
             $categoryProperties = $this->Category->getCategoryProperties($categoryId, $selectableProperties = false, $searchableProperties  = true);
-            $this->set(compact('products', 'categoryProperties'));
+            $this->set(compact('products', 'categoryProperties', 'minPrice', 'maxPrice'));
             return $this->render('Shop.view');
         }else{
             // get jadidtarin kala ha dar zir majmooeye in category
