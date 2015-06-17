@@ -6,6 +6,7 @@ class ShopActivation{
         'category_page' => 'category_page',
         'category_side_panel' => 'category_side_panel',
         'index_top_slider' => 'index_top_slider',
+        'category_top_slider' => 'category_top_slider',
     );
     public $blocks = array();
 
@@ -140,6 +141,19 @@ Lorem ipsum dolor sit amet consectetuer</h5>
                     'title' => 'اسلایدر',
                     'alias' => 'tshop_slider',
                     'body' => '[AparnicSlider:tshop_slider slug="tshop_slider"]',
+                    'element' => 'AparnicSlider.element_empty',
+                    'params' => 'enclosure=false',
+                    'show_title' => 0,
+                    'status' => 1,
+                    'visibility_roles' => '',
+                )
+            ),
+            array(
+                'Block' => array(
+                    'region_id' => $this->regions['category_top_slider'],
+                    'title' => 'اسلایدر صفحه ی دسته بندی ها',
+                    'alias' => 'category_page_slider',
+                    'body' => '[AparnicSlider:category_nivo_slider slug="category_nivo_slider"] ',
                     'element' => 'AparnicSlider.element_empty',
                     'params' => 'enclosure=false',
                     'show_title' => 0,
