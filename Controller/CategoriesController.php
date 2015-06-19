@@ -23,6 +23,7 @@ class CategoriesController extends ShopAppController {
     }
 
     public function index($categoryId){
+        debug($this->request->here());die;
         // get all given categoryId children
         $categoriesTree = $this->__getSubCategories($categoryId);
         $categoriesId = $this->__getCategoriesId($categoriesTree);
@@ -52,14 +53,14 @@ class CategoriesController extends ShopAppController {
                     'direction' => $this->request->query['direction'],
                 ));
             }
-            $filter_conditions = [];
+            $filter_conditions = ['or' => array(array())];
             if($this->request->is('ajax')){
                 $filters = $this->request->data;
                 foreach($filters as $property_id => $property_values){
                     foreach($property_values['values'] as $value){
                         $filter_conditions['or'][] = [
                             'and' => [
-                                'Property.property_id' => $property_id,
+                                'ProductMeta.property_id' => $property_id,
                                 'ProductMeta.property_value' => $value,
                             ],
                         ];
@@ -72,26 +73,29 @@ class CategoriesController extends ShopAppController {
             $this->paginate = array(
                 'limit' => 10,
                 'conditions' => $conditions,
+                'fields' => 'DISTINCT *',
             );
-            /*if($this->request->is('ajax')){
+            if($this->request->is('ajax')){
                 $this->paginate = array_merge($this->paginate, array(
-                    'join' => array(
+                    'joins' => array(
                         array(
                             'table' => 'shop_product_metas',
-                            'alias' => 'ProductMetas',
+                            'alias' => 'ProductMeta',
                             'type' => 'LEFT',
                             'conditions' => array(
-                                'Product.id = ProductMetas.product_id',
+                                'Product.id = ProductMeta.product_id',
                             )
                         )
                     ),
                 ));
-            }*/
+            }
             $this->Paginator->settings = $this->paginate;
             $products = $this->Paginator->paginate($this->Category->Product);
-            /*$log = $this->Category->getDataSource()->getLog(false, false);
-            debug($log);die;*/
             $this->set(compact('products'));
+            if($this->request->is('ajax')){
+                $this->render('Shop.Categories/json/index');
+                return;
+            }
             if(!$this->request->is('ajax')){
                 $categoryProperties = $this->Category->getCategoryProperties($categoryId, $selectableProperties = false, $searchableProperties  = true);
                 $this->set(compact('categoryProperties', 'minPrice', 'maxPrice'));
