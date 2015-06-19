@@ -38,7 +38,7 @@ class ProductMeta extends ShopAppModel {
         foreach($results as &$result){
             if(isset($result['ProductMeta']['property_id'])){
                 $propertyInfo = $this->__getPropertyInfo($result['ProductMeta']['property_id']);
-                $propertyValueInfo = $this->__getPropertyValue($propertyInfo);
+                $propertyValueInfo = $this->__getPropertyValue($propertyInfo['type'], $result['ProductMeta']['property_value']);
                 if(!$propertyValueInfo){
                     $propertyValueInfo = $result['ProductMeta']['property_value'];
                 }
@@ -59,11 +59,13 @@ class ProductMeta extends ShopAppModel {
         return array_shift($propertyInfo);
     }
 
-    private function __getPropertyValue($propertyInfo = array()){
-        if(isset($propertyInfo['type']) && in_array($propertyInfo['type'], array('select','radio','checkbox'))){
+    private function __getPropertyValue($propertyType, $propertyValueId){
+        if(in_array($propertyType, array('select','radio','checkbox'))){
             $propertyValueInfo = $this->Property->PropertyValue->find('first', array(
                 'recursive' => -1,
-                'conditions' => array('PropertyValue.property_id' => $propertyInfo['id']),
+                'conditions' => array(
+                    'PropertyValue.id' => $propertyValueId,
+                ),
             ));
             $propertyValueInfo = array_shift($propertyValueInfo);
             return $propertyValueInfo['option'];

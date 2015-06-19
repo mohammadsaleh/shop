@@ -2,6 +2,9 @@
 App::uses('Dropzone', 'Dropzone.Lib');
 Dropzone::load('Shop.default');
 
+Croogo::hookAdminTab('Products/admin_add', __d('shop', 'Properties'), 'Shop.product_category_properties');
+Croogo::hookAdminTab('Products/admin_edit', __d('shop', 'Properties'), 'Shop.product_category_properties');
+
 Croogo::hookComponent('*', 'Shop.Shop');
 Croogo::hookHelper('*', 'Shop.Shop');
 Croogo::hookBehavior('FactureItem', 'Shop.Shop');
