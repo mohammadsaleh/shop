@@ -3,10 +3,10 @@ class ShopActivation{
 
     public $regions = array(
         'index_product_center' => 'index_product_center',
-        'category_page' => 'category_page',
         'category_side_panel' => 'category_side_panel',
-        'index_top_slider' => 'index_top_slider',
-        'category_top_slider' => 'category_top_slider',
+        'index_product_top' => 'index_product_top',
+        'index_category_center_top' => 'index_category_center_top',
+        'view_category_center_top' => 'view_category_center_top',
     );
     public $blocks = array();
 
@@ -137,7 +137,7 @@ Lorem ipsum dolor sit amet consectetuer</h5>
             ),
             array(
                 'Block' => array(
-                    'region_id' => $this->regions['index_top_slider'],
+                    'region_id' => $this->regions['index_product_top'],
                     'title' => 'اسلایدر',
                     'alias' => 'tshop_slider',
                     'body' => '[AparnicSlider:tshop_slider slug="tshop_slider"]',
@@ -150,7 +150,7 @@ Lorem ipsum dolor sit amet consectetuer</h5>
             ),
             array(
                 'Block' => array(
-                    'region_id' => $this->regions['category_top_slider'],
+                    'region_id' => $this->regions['index_category_center_top'],
                     'title' => 'اسلایدر صفحه ی دسته بندی ها',
                     'alias' => 'category_page_slider',
                     'body' => '[AparnicSlider:category_nivo_slider slug="category_nivo_slider"] ',

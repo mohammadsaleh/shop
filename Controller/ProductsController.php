@@ -47,11 +47,6 @@ class ProductsController extends ShopAppController {
      * @param null $productId
      */
     public function add_to_cart($productId = null){
-//        $this->Session->delete('pay');
-//        $this->Session->write('pay.direct', 1);
-//        $this->Session->write('pay.paymentPlugin', 'zarin_pal');
-//        debug($this->Session->read('pay'));
-//        die;
         $this->autoRender = false;
         $response = array('status' => 'error');
         if($this->request->is('ajax') && $productId){
