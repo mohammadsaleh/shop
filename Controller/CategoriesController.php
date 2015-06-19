@@ -17,7 +17,7 @@ class CategoriesController extends ShopAppController {
     public function beforeFilter(){
         parent::beforeFilter();
         $this->Components->disable('Security');
-//        $this->Security->unlockedActions[] = 'admin_get_category_properties';
+//        $this->Security->unlockedActions[] = 'index';
 //        $this->Security->validatePost = false;
 //        $this->Security->csrfCheck = false;
     }
@@ -37,25 +37,72 @@ class CategoriesController extends ShopAppController {
                     $maxPrice = $this->request->query['maxPrice'];
                     $conditions['(Product.price * (1 - (Product.off/100)) ) <= '] = $maxPrice;
                 }
+                if( isset($this->request->query['sort']) && !($this->request->query['sort']) ) {
+                    unset($this->request->query['sort']);
+                    unset($this->request->query['direction']);
+                }elseif( isset($this->request->query['direction']) && !($this->request->query['direction']) ) {
+                    $this->request->query['direction'] = 'asc';
+                }
+                $this->request->query = array_merge(array(
+                    'sort' => 'Product.id',
+                    'direction' => 'asc',
+                ), $this->request->query);
+                $this->request->params['named'] = array_merge($this->request->params['named'], array(
+                    'sort' => $this->request->query['sort'],
+                    'direction' => $this->request->query['direction'],
+                ));
             }
+            $filter_conditions = [];
+            if($this->request->is('ajax')){
+                $filters = $this->request->data;
+                foreach($filters as $property_id => $property_values){
+                    foreach($property_values['values'] as $value){
+                        $filter_conditions['or'][] = [
+                            'and' => [
+                                'Property.property_id' => $property_id,
+                                'ProductMeta.property_value' => $value,
+                            ],
+                        ];
+                    }
+                }
+            }
+            $conditions = array_merge($conditions, $filter_conditions);
             // paginate mahsoolate in category
             // get searchables properties for using in filter
             $this->paginate = array(
                 'limit' => 10,
                 'conditions' => $conditions,
             );
+            /*if($this->request->is('ajax')){
+                $this->paginate = array_merge($this->paginate, array(
+                    'join' => array(
+                        array(
+                            'table' => 'shop_product_metas',
+                            'alias' => 'ProductMetas',
+                            'type' => 'LEFT',
+                            'conditions' => array(
+                                'Product.id = ProductMetas.product_id',
+                            )
+                        )
+                    ),
+                ));
+            }*/
             $this->Paginator->settings = $this->paginate;
             $products = $this->Paginator->paginate($this->Category->Product);
-            $categoryProperties = $this->Category->getCategoryProperties($categoryId, $selectableProperties = false, $searchableProperties  = true);
-            $this->set(compact('products', 'categoryProperties', 'minPrice', 'maxPrice'));
-            return $this->render('Shop.view');
+            /*$log = $this->Category->getDataSource()->getLog(false, false);
+            debug($log);die;*/
+            $this->set(compact('products'));
+            if(!$this->request->is('ajax')){
+                $categoryProperties = $this->Category->getCategoryProperties($categoryId, $selectableProperties = false, $searchableProperties  = true);
+                $this->set(compact('categoryProperties', 'minPrice', 'maxPrice'));
+                return $this->render('Shop.view');
+            }
         }else{
             // get jadidtarin kala ha dar zir majmooeye in category
             // get porforooshtarin kala ha dar zir majmooeye in category
             $latestProducts = $this->__getLatestProducts($categoriesId, 10);
             $bestsellingProducts = $this->__getBestsellingProducts($categoriesId, 10);
             $this->set(compact('latestProducts', 'bestsellingProducts'));
-
         }
     }
 
