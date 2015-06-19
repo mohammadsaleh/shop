@@ -67,12 +67,25 @@ class Product extends ShopAppModel {
     public function saveAssociated($data = NULL, $options = Array()){
         if($this->hasAnyProductMeta($data)){
             $this->__hasProductMeta = true;
-            foreach($data['ProductMeta'] as $key => $value){
+            foreach($data['ProductMeta'] as $key => $values){
                 $propertyId = explode('_', $key);
-                array_push($data['ProductMeta'], array(
-                    'property_id' => $propertyId[1],
-                    'property_value' => $value
-                ));
+                if(is_array($values)){
+                    foreach($values as $value => $isSet){
+                        array_push($data['ProductMeta'], array(
+                            'ProductMeta' => array(
+                                'property_id' => $propertyId[1],
+                                'property_value' => $value
+                            )
+                        ));
+                    }
+                }else{
+                    $value = $values;
+                    array_push($data['ProductMeta'], array(
+                        'property_id' => $propertyId[1],
+                        'property_value' => $value
+                    ));
+                }
+
                 unset($data['ProductMeta'][$key]);
             }
         }
@@ -108,7 +121,11 @@ class Product extends ShopAppModel {
             foreach($results as &$result){
                 if($this->hasAnyProductMeta($result)){
                     foreach($result['ProductMeta'] as $key => $item){
-                        $result['ProductMeta']['property_'.$item['property_id']] = $item['property_value'];
+                        if($item['Property']['type'] == 'checkbox'){
+                            $result['ProductMeta']['property_'.$item['property_id']][$item['property_value']] = true;
+                        }else{
+                            $result['ProductMeta']['property_'.$item['property_id']] = $item['property_value'];
+                        }
                         unset($result['ProductMeta'][$key]);
                     }
                 }

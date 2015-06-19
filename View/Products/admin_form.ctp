@@ -17,7 +17,6 @@ $this->append('form-start', $this->Form->create('Product'));
 
 $this->append('tab-heading');
 	echo $this->Croogo->adminTab(__d('shop', 'Product'), '#product');
-	echo $this->Croogo->adminTab(__d('shop', 'Properties'), '#product_properties');
 	echo $this->Croogo->adminTabs();
 $this->end();
 
@@ -71,11 +70,6 @@ $this->append('tab-content');
 		));
 
 	echo $this->Html->tabEnd();
-
-    echo $this->Html->tabStart('product_properties');
-        echo $this->element('Shop.product_category_properties', compact('categoryProperties'));
-    echo $this->Html->tabEnd();
-
 	echo $this->Croogo->adminTabs();
 
 $this->end();
