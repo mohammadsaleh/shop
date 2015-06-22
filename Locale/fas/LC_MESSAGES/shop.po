@@ -1,0 +1,205 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-06-23 15:10+0330\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: EMAIL@ADDRESS\n"
+"Language: fa_IR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.8.1\n"
+
+#: Config/bootstrap.php:5;6 View/Properties/admin_form.ctp:2;7;11
+#: View/Properties/admin_index.ctp:2;7
+msgid "Properties"
+msgstr "ویژگی ها"
+
+#: Config/bootstrap.php:7
+msgid "Add Property"
+msgstr "افزودن ویژگی جدید"
+
+#: Config/bootstrap.php:14
+msgid "Shop Center"
+msgstr "فروشگاه"
+
+#: Config/bootstrap.php:20 View/Categories/admin_form.ctp:2;7;11
+#: View/Categories/admin_index.ctp:2;7
+msgid "Categories"
+msgstr "دسته‌ها"
+
+#: Config/bootstrap.php:29
+msgid "Category Properties"
+msgstr "ویژگی های دسته"
+
+#: Config/bootstrap.php:38 View/Products/admin_form.ctp:2;7;11
+#: View/Products/admin_index.ctp:2;7
+msgid "Products"
+msgstr "محصولات"
+
+#: Controller/CategoriesController.php:206;221;231;247;251;261;282
+msgid "category"
+msgstr "دسته"
+
+#: Controller/CategoriesController.php:286;289
+#: View/Categories/admin_form.ctp:19 View/Elements/categories_tree_panel.ctp:7
+#: View/Elements/category_properties.ctp:11 View/Products/admin_form.ctp:30
+#: View/Products/admin_index.ctp:15
+msgid "Category"
+msgstr "دسته"
+
+#: Controller/ProductsController.php:149;163;173;190;195;205;235
+msgid "product"
+msgstr "محصول"
+
+#: Controller/ProductsController.php:239;242 View/Products/admin_form.ctp:19
+msgid "Product"
+msgstr "محصول"
+
+#: Controller/PropertiesController.php:56;71;81;98;102;112;144
+msgid "property"
+msgstr "ویژگی"
+
+#: Controller/PropertiesController.php:148;151
+#: View/Properties/admin_form.ctp:19
+msgid "Property"
+msgstr "ویژگی"
+
+#: View/Categories/admin_form.ctp:29
+msgid "Parent"
+msgstr "گزینه والد"
+
+#: View/Categories/admin_form.ctp:34 View/Products/admin_form.ctp:37
+#: View/Properties/admin_form.ctp:49
+msgid "Title"
+msgstr "عنوان"
+
+#: View/Categories/admin_form.ctp:38 View/Products/admin_form.ctp:43
+msgid "Slug"
+msgstr "نام مستعار"
+
+#: View/Categories/admin_form.ctp:42 View/Products/admin_form.ctp:51
+msgid "Description"
+msgstr "توضیحات"
+
+#: View/Categories/admin_index.ctp:13 View/Products/admin_index.ctp:13
+#: View/Properties/admin_index.ctp:13
+msgid "id"
+msgstr "شناسه"
+
+#: View/Categories/admin_index.ctp:14 View/Products/admin_index.ctp:14
+#: View/Properties/admin_index.ctp:16
+msgid "title"
+msgstr "عنوان"
+
+#: View/Elements/category_properties.ctp:12
+msgid "properties"
+msgstr "ویژگی ها"
+
+#: View/Elements/dropzone_template.ctp:20;144
+msgid "Current Index"
+msgstr "تصویر پیشفرض"
+
+#: View/Products/admin_form.ctp:54
+msgid "Price (Rials)"
+msgstr "قیمت (ریال)"
+
+#: View/Products/admin_form.ctp:60
+msgid "Off (%)"
+msgstr "تخفیف(%)"
+
+#: View/Products/admin_form.ctp:66
+msgid "Count"
+msgstr "تعداد"
+
+#: View/Products/admin_index.ctp:16
+msgid "price"
+msgstr "قیمت"
+
+#: View/Products/admin_index.ctp:17
+msgid "off"
+msgstr "تخفیف(%)"
+
+#: View/Products/admin_index.ctp:18
+msgid "count"
+msgstr "تعداد"
+
+#: View/Products/admin_index.ctp:19 View/Properties/admin_index.ctp:21
+msgid "created"
+msgstr "تاریخ ایجاد"
+
+#: View/Properties/admin_form.ctp:29
+msgid "Product Category"
+msgstr "دسته محصول"
+
+#: View/Properties/admin_form.ctp:34
+msgid "Name"
+msgstr "نام"
+
+#: View/Properties/admin_form.ctp:37
+msgid "Type"
+msgstr "نوع"
+
+#: View/Properties/admin_form.ctp:39
+msgid "Text"
+msgstr "متن"
+
+#: View/Properties/admin_form.ctp:40
+msgid "Radio"
+msgstr "دکمه های رادیویی"
+
+#: View/Properties/admin_form.ctp:41
+msgid "Checkbox"
+msgstr "چک باکس"
+
+#: View/Properties/admin_form.ctp:42
+msgid "Select"
+msgstr "- گزینش کنید -"
+
+#: View/Properties/admin_form.ctp:46
+msgid "Options"
+msgstr "گزینه ها"
+
+#: View/Properties/admin_form.ctp:51
+msgid "Is searchable?"
+msgstr "قابل جستجو است؟"
+
+#: View/Properties/admin_form.ctp:55
+msgid "Is hidden?"
+msgstr "مخفی شود؟"
+
+#: View/Properties/admin_form.ctp:59
+msgid "Is selectable on order?"
+msgstr "بر اساس سفارش قابل انتخاب است؟"
+
+#: View/Properties/admin_index.ctp:14
+msgid "name"
+msgstr "نام"
+
+#: View/Properties/admin_index.ctp:15
+msgid "type"
+msgstr "نوع"
+
+#: View/Properties/admin_index.ctp:17
+msgid "searchable"
+msgstr "قابل جستجو است؟"
+
+#: View/Properties/admin_index.ctp:18
+msgid "hidden"
+msgstr "مخفی شود؟"
+
+#: View/Properties/admin_index.ctp:19
+msgid "selectable_on_order"
+msgstr "بر اساس سفارش قابل انتخاب است؟"
+
+#: View/Properties/admin_index.ctp:20
+msgid "Category title"
+msgstr "عنوان دسته بندی"
+
+#~ msgid "Set Index"
+#~ msgstr "تصویر پیشفرض"

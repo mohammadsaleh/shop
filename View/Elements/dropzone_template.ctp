@@ -11,12 +11,13 @@ $this->append('script');
             paramName : 'data[Attachment][file]',
             previewTemplate: document.querySelector('#template').innerHTML,
             success: function(file, response){
+                console.log(response);
                 response = JSON.parse(response);
                 var removeIconDom = '<div class="icon-remove-sign remove-attachment"></div>';
                 var highlightDom = '' +
                     '<div class="set-as-index highlight ">' +
                     '<div class="icon-ok-sign check-index"></div>' +
-                    'Set Index</div>';
+                    '<?php echo __d('shop', 'Current Index')?></div>';
                 var inputDom = '<input id="attachment-'+response.data.attachment_id+'" type="hidden" name="data[Attachment][]" value="'+response.data.attachment_id+'" />';
                 var inputHidden = Dropzone.createElement(inputDom);
 
@@ -28,17 +29,20 @@ $this->append('script');
                 file.previewElement.appendChild(highlightDom);
                 file.previewElement.appendChild(inputHidden);
             }
-        }
+        };
         $('body').on('click', 'div.remove-attachment', function(){
             $(this).parent("div").remove();
         });
-        $('body').on('click', 'div.set-as-index', function(){
+        <?php
+        if(isset($this->request->data['Product'])){
+        ?>
+        $('body').on('click', 'div.set-as-index', function () {
             var attachmentId = $(this).data('attachment-id');
             console.log(attachmentId);
             var currentElem = $(this);
             $.ajax({
                 url: "<?php echo Router::url(array('plugin' => 'shop', 'controller' => 'products', 'action' => 'toggle_image_index', $this->request->data['Product']['id'])); ?>/" + attachmentId,
-                success: function(response){
+                success: function (response) {
                     response = JSON.parse(response);
                     if (response.status == 'success') {
                         $('.highlight.current-index').removeClass('current-index');
@@ -47,11 +51,17 @@ $this->append('script');
                 }
             });
         });
+        <?php
+        }
+        ?>
     });
 </script>
 <?php
 $this->end();
-$attachments = $this->request->data['Attachment'];
+$attachments = array();
+if(isset($this->request->data['Attachment'])){
+    $attachments = $this->request->data['Attachment'];
+}
 $dropzoneClass = 'dropzone';
 if(!empty($attachments)){
     $dropzoneClass .= ' dz-clickable dz-started ';
@@ -110,8 +120,7 @@ if(!empty($attachments)){
         display: block;
     }
 </style>
-<div class="hidden-attachments"></div>
-<div action="<?php echo Router::url($uploadUrl);?>" class="<?php echo $dropzoneClass;?>" id="my-dropzone">
+    <div action="<?php echo Router::url($uploadUrl);?>" class="<?php echo $dropzoneClass;?>" id="my-dropzone">
     <div class="dz-message">Drop files here or click to upload.</div>
     <?php
     foreach($attachments as $attachment){
@@ -132,7 +141,7 @@ if(!empty($attachments)){
             <div class="icon-remove-sign remove-attachment"></div>
             <div class="set-as-index highlight <?php echo $attachment['ShopProductsAttachment']['is_index'] ? 'current-index' : '';?>" data-attachment-id="<?php echo $attachment['id'];?>">
                 <div class="icon-ok-sign check-index"></div>
-                <?php echo $attachment['ShopProductsAttachment']['is_index'] ? __d('shop', 'Current Index') : __d('shop', 'Set Index')?>
+                <?php echo __d('shop', 'Current Index')?>
             </div>
             <input id="attachment-<?php echo $attachment['id']; ?>" type="hidden" name="data[Attachment][]" value="<?php echo $attachment['id']; ?>">
         </div>

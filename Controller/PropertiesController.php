@@ -20,6 +20,20 @@ class PropertiesController extends ShopAppController {
         $this->Security->csrfCheck = false;
     }
 
+    public function admin_toggle($id = null, $status = null, $field = null) {
+        if (empty($id) || $status === null) {
+            throw new CakeException(__d('croogo', 'Invalid content'));
+        }
+        $this->Property->id = $id;
+        $status = (int)!$status;
+        $this->layout = 'ajax';
+        if ($this->Property->saveField($field, $status)) {
+            $this->set(compact('id', 'status', 'field'));
+            $this->render('admin_toggle');
+        } else {
+            throw new CakeException(__d('croogo', 'Failed toggling field %s to %s', $field, $status));
+        }
+    }
 /**
  * admin_index method
  *
