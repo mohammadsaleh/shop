@@ -23,80 +23,77 @@ class CategoriesController extends ShopAppController {
     }
 
     public function index($categoryId){
-        debug($this->request->here());die;
+        $this->autoRender = false;
         // get all given categoryId children
         $categoriesTree = $this->__getSubCategories($categoryId);
         $categoriesId = $this->__getCategoriesId($categoriesTree);
         if(empty($categoriesTree['children'])){
             $conditions = array('Product.category_id' => $categoriesId);
-            if(!empty($this->request->query)){
-                if(isset($this->request->query['minPrice']) && is_numeric($this->request->query['minPrice'])){
-                    $minPrice = $this->request->query['minPrice'];
+            if(!empty($this->request->named)){
+                if(isset($this->request->named['minPrice']) && is_numeric($this->request->named['minPrice'])){
+                    $minPrice = $this->request->named['minPrice'];
                     $conditions['(Product.price * (1 - (Product.off/100)) ) >= '] = $minPrice;
                 }
-                if(isset($this->request->query['maxPrice']) && is_numeric($this->request->query['maxPrice'])){
-                    $maxPrice = $this->request->query['maxPrice'];
+                if(isset($this->request->named['maxPrice']) && is_numeric($this->request->named['maxPrice'])){
+                    $maxPrice = $this->request->named['maxPrice'];
                     $conditions['(Product.price * (1 - (Product.off/100)) ) <= '] = $maxPrice;
                 }
-                if( isset($this->request->query['sort']) && !($this->request->query['sort']) ) {
-                    unset($this->request->query['sort']);
-                    unset($this->request->query['direction']);
-                }elseif( isset($this->request->query['direction']) && !($this->request->query['direction']) ) {
-                    $this->request->query['direction'] = 'asc';
+                if( isset($this->request->named['sort']) && !($this->request->named['sort']) ) {
+                    unset($this->request->named['sort']);
+                    unset($this->request->named['direction']);
+                }elseif( isset($this->request->named['direction']) && !($this->request->named['direction']) ) {
+                    $this->request->named['direction'] = 'asc';
                 }
-                $this->request->query = array_merge(array(
+                $this->request->named = array_merge(array(
                     'sort' => 'Product.id',
                     'direction' => 'asc',
-                ), $this->request->query);
+                ), $this->request->named);
                 $this->request->params['named'] = array_merge($this->request->params['named'], array(
-                    'sort' => $this->request->query['sort'],
-                    'direction' => $this->request->query['direction'],
+                    'sort' => $this->request->named['sort'],
+                    'direction' => $this->request->named['direction'],
                 ));
             }
             $filter_conditions = ['or' => array(array())];
-            if($this->request->is('ajax')){
-                $filters = $this->request->data;
-                foreach($filters as $property_id => $property_values){
-                    foreach($property_values['values'] as $value){
-                        $filter_conditions['or'][] = [
-                            'and' => [
-                                'ProductMeta.property_id' => $property_id,
-                                'ProductMeta.property_value' => $value,
-                            ],
-                        ];
-                    }
-                }
+            $filters = isset($this->request->named['p'])?$this->request->named['p']:array();
+            if(!is_array($filters)){
+                $filters = array($filters);
+            }
+            foreach($filters as $property){
+                $property = explode(':', $property);
+                $filter_conditions['or'][] = [
+                    'and' => [
+                        'ProductMeta.property_id' => array_shift($property),
+                        'ProductMeta.property_value' => array_shift($property),
+                    ],
+                ];
             }
             $conditions = array_merge($conditions, $filter_conditions);
             // paginate mahsoolate in category
             // get searchables properties for using in filter
             $this->paginate = array(
-                'limit' => 10,
+                'limit' => 2,
                 'conditions' => $conditions,
                 'fields' => 'DISTINCT *',
             );
-            if($this->request->is('ajax')){
-                $this->paginate = array_merge($this->paginate, array(
-                    'joins' => array(
-                        array(
-                            'table' => 'shop_product_metas',
-                            'alias' => 'ProductMeta',
-                            'type' => 'LEFT',
-                            'conditions' => array(
-                                'Product.id = ProductMeta.product_id',
-                            )
+            $this->paginate = array_merge($this->paginate, array(
+                'joins' => array(
+                    array(
+                        'table' => 'shop_product_metas',
+                        'alias' => 'ProductMeta',
+                        'type' => 'LEFT',
+                        'conditions' => array(
+                            'Product.id = ProductMeta.product_id',
                         )
-                    ),
-                ));
-            }
+                    )
+                ),
+            ));
             $this->Paginator->settings = $this->paginate;
             $products = $this->Paginator->paginate($this->Category->Product);
             $this->set(compact('products'));
             if($this->request->is('ajax')){
-                $this->render('Shop.Categories/json/index');
-                return;
+                return $this->render('Shop.Categories/ajax/index');
             }
-            if(!$this->request->is('ajax')){
+            else{
                 $categoryProperties = $this->Category->getCategoryProperties($categoryId, $selectableProperties = false, $searchableProperties  = true);
                 $this->set(compact('categoryProperties', 'minPrice', 'maxPrice'));
                 return $this->render('Shop.view');
