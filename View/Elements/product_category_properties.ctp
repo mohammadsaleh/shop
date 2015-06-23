@@ -19,24 +19,29 @@
         vertical-align: sub;
         margin-left: 15px;
     }
-
+    #product-category-properties{
+        padding: 15px;
+    }
 </style>
+<div id="product-category-properties">
+    <?php
+    echo $this->element('category_properties', compact('categoryProperties'));
+    ?>
+</div>
 <?php
-if(!empty($categoryProperties)){
-    $inputs = array();
-    foreach($categoryProperties as $property){
-        $inputs[$property['Category']['title']][] = $this->element('product_category_properties_'.$property['Property']['type'], compact('property'));;
-    }
-    foreach($inputs as $categoryTitle => $input){
-        echo $this->Html->tag('fieldset',
-            $this->Html->tag(
-                'legend',
-                __d('shop', 'Category')
-                . ' ' . __d('shop', 'properties')
-                . ' : ' . __d('shop', $categoryTitle),
-                array('style' => 'font-weight:bold')
-            ).
-            implode('', $input)
-        );
-    }
-}
+$this->start('script');
+?>
+<script>
+    $(document).ready(function(){
+        $('select#ProductCategoryId').on('change', function(){
+            var url = '<?php echo Router::url(array('action' => 'get_category_properties'))?>'
+            $.post(url, {category_id : this.value},"json")
+                .success(function(data){
+                    $('#product-category-properties').html(data);
+                })
+        });
+    });
+</script>
+<?php
+$this->end();
+?>

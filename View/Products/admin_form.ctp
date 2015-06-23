@@ -86,20 +86,4 @@ $this->append('panels');
 $this->end();
 
 $this->append('form-end', $this->Form->end());
-
-$this->start('script');
-?>
-<script>
-    $(document).ready(function(){
-        $('select#ProductCategoryId').on('change', function(){
-            var url = '<?php echo Router::url(array('action' => 'get_category_properties'))?>'
-            $.post(url, {category_id : this.value},"json")
-                .success(function(data){
-                    $('#product_properties').html(data);
-                })
-        });
-    });
-</script>
-<?php
-$this->end();
 echo $this->element("Shop.jquery_slug_maker", array('origin' => 'ProductTitle', 'target' => 'slug'));

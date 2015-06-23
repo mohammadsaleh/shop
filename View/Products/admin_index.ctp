@@ -10,14 +10,13 @@ $this->set('tableClass', 'table table-striped');
 
 $this->append('table-heading');
 	$tableHeaders = $this->Html->tableHeaders(array(
-		$this->Paginator->sort('id'),
-		$this->Paginator->sort('title'),
-        $this->Paginator->sort('category_id'),
-        $this->Paginator->sort('description'),
-		$this->Paginator->sort('price'),
-		$this->Paginator->sort('off'),
-		$this->Paginator->sort('count'),
-		$this->Paginator->sort('created'),
+		$this->Paginator->sort('id', __d('shop', 'id')),
+		$this->Paginator->sort('title', __d('shop', 'title')),
+        $this->Paginator->sort('category_id', __d('shop', 'Category')),
+		$this->Paginator->sort('price', __d('shop', 'price')),
+		$this->Paginator->sort('off', __d('shop', 'off')),
+		$this->Paginator->sort('count', __d('shop', 'count')),
+		$this->Paginator->sort('created', __d('shop', 'created')),
 		array(__d('croogo', 'Actions') => array('class' => 'actions')),
 	));
 	echo $this->Html->tag('thead', $tableHeaders);
@@ -34,17 +33,16 @@ $this->append('table-body');
 		'action' => 'view',
 			$product['Category']['id'],
 	));
-		$row[] = h($product['Product']['description']);
-		$row[] = h($product['Product']['price']);
-		$row[] = h($product['Product']['off']);
+		$row[] = number_format(h($product['Product']['price']));
+		$row[] = h($product['Product']['off']) ? h($product['Product']['off']).'%' : h($product['Product']['off']);
 		$row[] = h($product['Product']['count']);
-		$row[] = h($product['Product']['created']);
+		$row[] = jdate('Y-m-d H:i:s', h($product['Product']['created']), null, Configure::read('Site.timezone'), 'en');
 		$actions = array($this->Croogo->adminRowActions($product['Product']['id']));
-		$actions[] = $this->Croogo->adminRowAction('', array(
-			'action' => 'view', $product['Product']['id']
-	), array(
-			'icon' => 'eye-open',
-		));
+//		$actions[] = $this->Croogo->adminRowAction('', array(
+//			'action' => 'view', $product['Product']['id']
+//	), array(
+//			'icon' => 'eye-open',
+//		));
 		$actions[] = $this->Croogo->adminRowAction('', array(
 			'action' => 'edit',
 			$product['Product']['id'],

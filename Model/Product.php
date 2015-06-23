@@ -151,22 +151,24 @@ class Product extends ShopAppModel {
     private function __deleteAttachment(&$data = array()){
         if(isset($data['Attachment'])){
             $attachmentIds = $data['Attachment'];
-            $sql = '
-                DELETE FROM '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
-                WHERE
-                    product_id = '.$data['Product']['id'].'
-                    AND attachment_id NOT IN ('. implode(',', $attachmentIds) .')
-            ';
-            $this->query($sql);
-            $sql = '
-                SELECT attachment_id
-                FROM '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
-                WHERE
-                    product_id = '.$data['Product']['id'].'
-            ';
-            $attachmentIds = $this->query($sql);
-            $attachmentIds = Set::extract('/shop_products_attachments/attachment_id', $attachmentIds);
-            $data['Attachment'] = array_diff($data['Attachment'], $attachmentIds);
+            if(isset($data['Product']['id']) && !empty($data['Product']['id'])){
+                $sql = '
+                    DELETE FROM '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
+                    WHERE
+                        product_id = '.$data['Product']['id'].'
+                        AND attachment_id NOT IN ('. implode(',', $attachmentIds) .')
+                ';
+                $this->query($sql);
+                $sql = '
+                    SELECT attachment_id
+                    FROM '.$this->hasAndBelongsToMany['Attachment']['joinTable'].'
+                    WHERE
+                        product_id = '.$data['Product']['id'].'
+                ';
+                $attachmentIds = $this->query($sql);
+                $attachmentIds = Set::extract('/shop_products_attachments/attachment_id', $attachmentIds);
+                $data['Attachment'] = array_diff($data['Attachment'], $attachmentIds);
+            }
         }
     }
     public function update_attachment($data = array(), $where = array()){

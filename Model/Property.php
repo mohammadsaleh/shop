@@ -61,9 +61,15 @@ class Property extends ShopAppModel {
 	);
 
     public function beforeSave($options = array()){
-        $this->data['Property']['searchable'] = !!$this->data['Property']['searchable'];
-        $this->data['Property']['hidden'] = !!$this->data['Property']['hidden'];
-        $this->data['Property']['selectable_on_order'] = !!$this->data['Property']['selectable_on_order'];
+        if(isset($this->data['Property']['searchable'])){
+            $this->data['Property']['searchable'] = !!$this->data['Property']['searchable'];
+        }
+        if(isset($this->data['Property']['hidden'])){
+            $this->data['Property']['hidden'] = !!$this->data['Property']['hidden'];
+        }
+        if(isset($this->data['Property']['selectable_on_order'])){
+            $this->data['Property']['selectable_on_order']= !!$this->data['Property']['selectable_on_order'];
+        }
         return true;
     }
 

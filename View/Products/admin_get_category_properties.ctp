@@ -1,1 +1,2 @@
-<?php echo $this->element('Shop.product_category_properties', compact('categoryProperties')); ?>
+<?php
+echo $this->element('category_properties', compact('categoryProperties'));
