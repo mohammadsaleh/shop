@@ -13,7 +13,6 @@ class CategoriesController extends ShopAppController {
  *
  * @var array
  */
-	public $components = array('Paginator');
     public function beforeFilter(){
         parent::beforeFilter();
         $this->Components->disable('Security');
@@ -29,32 +28,32 @@ class CategoriesController extends ShopAppController {
         $categoriesId = $this->__getCategoriesId($categoriesTree);
         if(empty($categoriesTree['children'])){
             $conditions = array('Product.category_id' => $categoriesId);
-            if(!empty($this->request->named)){
-                if(isset($this->request->named['minPrice']) && is_numeric($this->request->named['minPrice'])){
-                    $minPrice = $this->request->named['minPrice'];
+            if(!empty($this->request->params['named'])){
+                if(isset($this->request->params['named']['minPrice']) && is_numeric($this->request->params['named']['minPrice'])){
+                    $minPrice = $this->request->params['named']['minPrice'];
                     $conditions['(Product.price * (1 - (Product.off/100)) ) >= '] = $minPrice;
                 }
-                if(isset($this->request->named['maxPrice']) && is_numeric($this->request->named['maxPrice'])){
+                if(isset($this->request->params['named']['maxPrice']) && is_numeric($this->request->params['named']['maxPrice'])){
                     $maxPrice = $this->request->named['maxPrice'];
                     $conditions['(Product.price * (1 - (Product.off/100)) ) <= '] = $maxPrice;
                 }
-                if( isset($this->request->named['sort']) && !($this->request->named['sort']) ) {
-                    unset($this->request->named['sort']);
-                    unset($this->request->named['direction']);
-                }elseif( isset($this->request->named['direction']) && !($this->request->named['direction']) ) {
-                    $this->request->named['direction'] = 'asc';
+                if( isset($this->request->params['named']['sort']) && !($this->request->params['named']['sort']) ) {
+                    unset($this->request->params['named']['sort']);
+                    unset($this->request->params['named']['direction']);
+                }elseif( isset($this->request->params['named']['direction']) && !($this->request->params['named']['direction']) ) {
+                    $this->request->params['named']['direction'] = 'asc';
                 }
-                $this->request->named = array_merge(array(
+                $this->request->params['named'] = array_merge(array(
                     'sort' => 'Product.id',
                     'direction' => 'asc',
-                ), $this->request->named);
+                ), $this->request->params['named']);
                 $this->request->params['named'] = array_merge($this->request->params['named'], array(
-                    'sort' => $this->request->named['sort'],
-                    'direction' => $this->request->named['direction'],
+                    'sort' => $this->request->params['named']['sort'],
+                    'direction' => $this->request->params['named']['direction'],
                 ));
             }
             $filter_conditions = ['or' => array(array())];
-            $filters = isset($this->request->named['p'])?$this->request->named['p']:array();
+            $filters = isset($this->request->params['named']['p'])?$this->request->params['named']['p']:array();
             if(!is_array($filters)){
                 $filters = array($filters);
             }
@@ -71,11 +70,9 @@ class CategoriesController extends ShopAppController {
             // paginate mahsoolate in category
             // get searchables properties for using in filter
             $this->paginate = array(
-                'limit' => 2,
                 'conditions' => $conditions,
                 'fields' => 'DISTINCT *',
-            );
-            $this->paginate = array_merge($this->paginate, array(
+                'limit' => 2,
                 'joins' => array(
                     array(
                         'table' => 'shop_product_metas',
@@ -86,9 +83,9 @@ class CategoriesController extends ShopAppController {
                         )
                     )
                 ),
-            ));
-            $this->Paginator->settings = $this->paginate;
-            $products = $this->Paginator->paginate($this->Category->Product);
+                'group' => array('Product.id')
+            );
+            $products = $this->paginate($this->Category->Product);
             $this->set(compact('products'));
             if($this->request->is('ajax')){
                 return $this->render('Shop.Categories/ajax/index');
