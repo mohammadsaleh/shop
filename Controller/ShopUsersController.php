@@ -1,12 +1,13 @@
 <?php
-class ShopUsersController extends ShopAppController{
+App::uses('UsersController', 'Users.Controller');
+class ShopUsersController extends UsersController{
 
     public function beforeFilter(){
         parent::beforeFilter();
         $this->Components->disable('Security');
     }
+
     public function edit($username = null){
-        $this->loadModel('Users.User');
         if(!empty($this->request->data)){
             $this->User->id = $this->Auth->user('id');
             unset($this->request->data['User']['username']);
@@ -23,8 +24,24 @@ class ShopUsersController extends ShopAppController{
 
         $this->set('title_for_layout', $user['User']['name']);
         $this->set(compact('user'));
-        $this->viewPath = 'Users';
-        $this->render('Users.view');
+        $this->render('Users.edit');
     }
+    
+    public function add(){
+        if(!empty($this->request->data)){
+            $this->request->data['User']['name'] = strstr($this->request->data['User']['email'], '@', true);;
+            $this->request->data['User']['username'] = strstr($this->request->data['User']['email'], '@', true);
+            $this->request->data['User']['website'] = '';
+            $this->request->data['User']['password'] = substr(md5(uniqid()), 0, 10);
+        }
+        parent::add();
+        $this->render('Users.add');
+    }
+
+    public function beforeRender(){
+        parent::beforeRender();
+        $this->viewPath = 'Users';
+    }
+
 
 }

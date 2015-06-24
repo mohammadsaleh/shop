@@ -5,10 +5,14 @@ CroogoRouter::connect('/', array(
     'action' => 'index'
 ));
 Router::promote();
-CroogoRouter::connect('/users/users/edit/*', array(
+CroogoRouter::connect('/register', array(
     'plugin' => 'shop',
     'controller' => 'shop_users',
-    'action' => 'edit'
+    'action' => 'add'
+));
+CroogoRouter::connect('/users/users/:action/*', array(
+    'plugin' => 'shop',
+    'controller' => 'shop_users',
 ));
 
 CroogoRouter::connect(
