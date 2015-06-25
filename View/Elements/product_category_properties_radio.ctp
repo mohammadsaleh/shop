@@ -12,7 +12,8 @@
                 'ProductMeta.property_'.$propertyValue['property_id'],
                 array($propertyValue['id'] => ''),
                 array(
-                    'label' => false
+                    'label' => false,
+                    'hiddenField' => false
                 )
             );
             ?>

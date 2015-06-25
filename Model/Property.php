@@ -77,7 +77,7 @@ class Property extends ShopAppModel {
         if($data['Property']['type'] != 'text'){
             $propertyValues = Set::extract('{n}.option', $data['PropertyValue']);
             $options = array_shift($propertyValues);
-            $options = explode(',', $options);
+            $options = explode(',', str_replace('،', ',', $options));
             $data['PropertyValue'] = array_map(function($value){return ['option' => trim($value)];}, $options);
         }else{
             unset($data['PropertyValue']);

@@ -2,8 +2,8 @@
 App::uses('Dropzone', 'Dropzone.Lib');
 Dropzone::load('Shop.default');
 
-Croogo::hookAdminTab('Products/admin_add', __d('shop', 'Properties'), 'Shop.product_category_properties');
-Croogo::hookAdminTab('Products/admin_edit', __d('shop', 'Properties'), 'Shop.product_category_properties');
+Croogo::hookAdminTab('Products/admin_add', 'Properties', 'Shop.product_category_properties');
+Croogo::hookAdminTab('Products/admin_edit', 'Properties', 'Shop.product_category_properties');
 Croogo::hookAdminRowAction('Categories/admin_index', __d('shop', 'Add Property'), 'admin:true/plugin:shop/controller:properties/action:add/:id');
 
 Croogo::hookComponent('*', 'Shop.Shop');
