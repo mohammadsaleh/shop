@@ -52,19 +52,26 @@ class CategoriesController extends ShopAppController {
                     'direction' => $this->request->params['named']['direction'],
                 ));
             }
-            $filter_conditions = ['or' => array(array())];
             $filters = isset($this->request->params['named']['p'])?$this->request->params['named']['p']:array();
             if(!is_array($filters)){
                 $filters = array($filters);
             }
+            $filter_groups = [];
             foreach($filters as $property){
-                $property = explode(':', $property);
-                $filter_conditions['or'][] = [
-                    'and' => [
-                        'ProductMeta.property_id' => array_shift($property),
-                        'ProductMeta.property_value' => array_shift($property),
-                    ],
-                ];
+                list($property_id, $property_value) = explode(':', $property);
+                $filter_groups[$property_id][] = $property_value;
+
+            }
+            $filter_conditions = array('or' => array(array()));
+            foreach($filter_groups as $property_id => $property_values){
+                foreach($property_values as $property_value){
+                    $filter_conditions['or'][] = [
+                        'and' => [
+                            'ProductMeta.property_id' => $property_id,
+                            'ProductMeta.property_value' => $property_value,
+                        ],
+                    ];
+                }
             }
             $conditions = array_merge($conditions, $filter_conditions);
             // paginate mahsoolate in category
@@ -72,7 +79,7 @@ class CategoriesController extends ShopAppController {
             $this->paginate = array(
                 'conditions' => $conditions,
                 'fields' => 'DISTINCT *',
-                'limit' => 2,
+                'limit' => 10,
                 'joins' => array(
                     array(
                         'table' => 'shop_product_metas',
@@ -86,6 +93,8 @@ class CategoriesController extends ShopAppController {
                 'group' => array('Product.id')
             );
             $products = $this->paginate($this->Category->Product);
+            /*$log = $this->Category->getDataSource()->getLog(false, false);
+            debug($log);die;*/
             $this->set(compact('products'));
             if($this->request->is('ajax')){
                 return $this->render('Shop.Categories/ajax/index');
