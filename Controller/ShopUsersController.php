@@ -38,10 +38,14 @@ class ShopUsersController extends UsersController{
         $this->render('Users.add');
     }
 
+    public function login(){
+        parent::login();
+        $this->render('Users.login');
+    }
+
     public function beforeRender(){
         parent::beforeRender();
         $this->viewPath = 'Users';
     }
-
-
+    
 }

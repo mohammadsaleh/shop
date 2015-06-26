@@ -55,6 +55,10 @@ class ShopActivation{
         $controller->Croogo->addAco('Shop/Products/view', array('admin', 'registered', 'public'));
         $controller->Croogo->addAco('Shop/Products/add_to_cart', array('admin', 'registered', 'public'));
         $controller->Croogo->addAco('Shop/Categories/index', array('admin', 'registered', 'public'));
+
+        $controller->Croogo->addAco('Shop/ShopUsers/add', array('admin', 'registered', 'public'));
+        $controller->Croogo->addAco('Shop/ShopUsers/login', array('admin', 'registered', 'public'));
+        $controller->Croogo->addAco('Shop/ShopUsers/logout', array('admin', 'registered', 'public'));
     }
     
     public function removeBlocks(){
