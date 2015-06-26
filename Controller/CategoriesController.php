@@ -110,6 +110,7 @@ class CategoriesController extends ShopAppController {
             $latestProducts = $this->__getLatestProducts($categoriesId, 10);
             $bestsellingProducts = $this->__getBestsellingProducts($categoriesId, 10);
             $this->set(compact('latestProducts', 'bestsellingProducts'));
+            return $this->render('Shop.index');
         }
     }
 
