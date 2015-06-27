@@ -10,10 +10,17 @@ CroogoRouter::connect('/register', array(
     'controller' => 'shop_users',
     'action' => 'add'
 ));
-CroogoRouter::connect('/users/users/:action/*', array(
+CroogoRouter::connect('/users/users/edit/*', array(
     'plugin' => 'shop',
     'controller' => 'shop_users',
+    'action' => 'edit'
 ));
+CroogoRouter::connect('/users/users/add/*', array(
+    'plugin' => 'shop',
+    'controller' => 'shop_users',
+    'action' => 'add',
+));
+
 
 CroogoRouter::connect(
     '/shop/category/:id/*',
