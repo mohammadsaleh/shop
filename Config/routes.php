@@ -20,6 +20,11 @@ CroogoRouter::connect('/users/users/add/*', array(
     'controller' => 'shop_users',
     'action' => 'add',
 ));
+CroogoRouter::connect('/users/users/login/*', array(
+    'plugin' => 'shop',
+    'controller' => 'shop_users',
+    'action' => 'login',
+));
 
 
 CroogoRouter::connect(
