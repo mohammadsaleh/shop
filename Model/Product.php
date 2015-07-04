@@ -119,6 +119,7 @@ class Product extends ShopAppModel {
         $request = Router::getRequest();
         if(isset($request->params['admin']) && $request->params['admin']){
             foreach($results as &$result){
+                $result['Combinations'] = array();
                 if($this->hasAnyProductMeta($result)){
                     foreach($result['ProductMeta'] as $key => $item){
                         if($item['Property']['type'] == 'checkbox'){
@@ -129,10 +130,12 @@ class Product extends ShopAppModel {
                         unset($result['ProductMeta'][$key]);
                     }
                 }
+                $result['Combinations'] = $this->__getCombinations($result['Product']['id']);
             }
         }else{
             // set index image as path in Attachment array
             foreach($results as &$result){
+                $result['Combinations'] = array();
                 if(isset($result['Attachment']) && !empty($result['Attachment'])){
                     $attachments = $result['Attachment'];
                     $result['Attachment']['path'] = $result['Attachment'][0]['path'];
@@ -143,11 +146,54 @@ class Product extends ShopAppModel {
                         }
                     }
                 }
+                $result['Combinations'] = $this->__getCombinations($result['Product']['id']);
             }
         }
         return $results;
     }
 
+    private function __getCombinations($productId = null){
+        $combinations = $this->ProductMeta->CombinationsProperty->find('all', array(
+            'recursive' => -1,
+            'fields' => array(
+                'ProductCombination.*',
+                'PropertyValue.id',
+                'PropertyValue.option',
+                'Property.id',
+                'Property.name',
+                'Property.title',
+                'Property.type',
+            ),
+            'conditions' => array('ProductMeta.product_id' => $productId),
+            'joins' => array(
+                array(
+                    'table' => 'shop_product_metas',
+                    'alias' => 'ProductMeta',
+                    'type' => 'LEFT',
+                    'conditions' => array('CombinationsProperty.product_meta_id = ProductMeta.id'),
+                ),
+                array(
+                    'table' => 'shop_product_combinations',
+                    'alias' => 'ProductCombination',
+                    'type' => 'LEFT',
+                    'conditions' => array('ProductCombination.id = CombinationsProperty.product_combination_id'),
+                ),
+                array(
+                    'table' => 'shop_properties',
+                    'alias' => 'Property',
+                    'type' => 'LEFT',
+                    'conditions' => array('Property.id = ProductMeta.property_id'),
+                ),
+                array(
+                    'table' => 'shop_property_values',
+                    'alias' => 'PropertyValue',
+                    'type' => 'LEFT',
+                    'conditions' => array('PropertyValue.id = ProductMeta.property_value'),
+                ),
+            )
+        ));
+        return $combinations;
+    }
     private function __deleteAttachment(&$data = array()){
         if(isset($data['Attachment'])){
             $attachmentIds = $data['Attachment'];
