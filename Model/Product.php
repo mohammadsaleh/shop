@@ -149,11 +149,12 @@ class Product extends ShopAppModel {
                 $result['Combinations'] = $this->__getCombinations($result['Product']['id']);
                 $combinations = [];
                 foreach($result['Combinations'] as $combination){
-                    $key = "com_" . $combination['ProductCombination']['id'];
+                    $key = $combination['ProductCombination']['id'];
                     if(!isset($combinations[$key])){
                         $combinations[$key] = $combination['ProductCombination'];
                     }
                     $property = $combination['Property'];
+                    $property['uniqueId'] = $combination['PropertyValue']['id'];
                     $property['PropertyValue'] = $combination['PropertyValue']['option'];
                     $combinations[$key]['Properties'][] = $property;
                 }

@@ -46,16 +46,24 @@ class ProductsController extends ShopAppController {
     /**
      * @param null $productId
      */
-    public function add_to_cart($productId = null){
+    public function add_to_cart($productId = null, $factureItemKey = null){
         $this->autoRender = false;
         $response = array('status' => 'error');
-        if($this->request->is('ajax') && $productId){
-            $productInfo = $this->Product->find('first', array(
-                'conditions' => array('Product.id' => $productId),
-            ));
-            if(!empty($productInfo)){
-                $this->__addToCard($productInfo);
-                $response = array('status' => 'success');
+        if($this->request->is('ajax')){
+            if($productId){
+                $productInfo = $this->Product->find('first', array(
+                    'conditions' => array('Product.id' => $productId),
+                ));
+                if(!empty($productInfo)){
+                    $this->__addToCard($productInfo);
+                    $response = array('status' => 'success');
+                }
+            }elseif(isset($factureItemKey)){
+                $factureItem = CakeSession::read('pay.facture.FactureItem.' . $factureItemKey);
+                if(!empty($factureItem)){
+                    classFacture::addFactureItemsToSession($factureItem, $factureItem['foreign_key']);
+                    $response = array('status' => 'success');
+                }
             }
         }
         echo json_encode($response);
@@ -63,13 +71,13 @@ class ProductsController extends ShopAppController {
     /**
      * @param null $productId
      */
-    public function remove_from_cart($productId, $forceDelete = false){
-        $productId = (int)$productId;
+    public function remove_from_cart($factureItemKey, $forceDelete = false){
+        $factureItemKey = (int)$factureItemKey;
         $this->autoRender = false;
         $response = array('status' => 'error');
-        $price = CakeSession::read('pay.facture.FactureItem.' . $productId . '.price');
-        if(($this->request->is('ajax') && $productId)){
-            if( ($removeStatus = classFacture::removeFactureItemsFromSession($productId, $forceDelete) ) !== false){
+        $price = CakeSession::read('pay.facture.FactureItem.' . $factureItemKey . '.price');
+        if(($this->request->is('ajax') && isset($factureItemKey))){
+            if( ($removeStatus = classFacture::removeFactureItemsFromSession($factureItemKey, $forceDelete) ) !== false){
                 $response = array(
                     'status' => 'success',
                     'product' => [
@@ -90,15 +98,20 @@ class ProductsController extends ShopAppController {
         //if item exist increase it's number
         $price = $item['Product']['price'];
         $off = $item['Product']['off'] ? $item['Product']['off'] : 0;
-        $price = $price - (($price * $off) / 100);
         $this->request->data = array_merge(array(
             'description' => '',
+            'combination_id' => 0,
             'metas' => array()
         ), $this->request->data);
+        $inc_price = 0;
+        if($combination_id = $this->request->data['combination_id']){
+            $inc_price = $item['Combinations'][$combination_id]['inc_price'];
+        }
+        $off_price = (1 - ($off / 100)) * ($price + $inc_price);
         $factureItem = array(
             'number' => 1,
-            'price' => $price,
-            'base_price' => $item['Product']['price'],
+            'price' => $off_price,
+            'base_price' => $price + $inc_price,
             'off' => $item['Product']['off'],
             'type' => -1,
             'model' => 'Product',
@@ -110,6 +123,10 @@ class ProductsController extends ShopAppController {
         //Process FactureItemMeta for this item.
         if(isset($this->request->data) && !empty($this->request->data)){
             $factureItem['FactureItemMeta'] = array();
+            $factureItem['combination'] = array();
+            if($combination_id){
+                $factureItem['combination'] = $item['Combinations'][$combination_id];
+            }
             foreach($this->request->data['metas'] as $propertyId => $propertyValue){
                 array_push($factureItem['FactureItemMeta'], array(
                     'FactureItemMeta' => array(
