@@ -10,6 +10,7 @@ class Product extends ShopAppModel {
 
 
     private $__hasProductMeta = false;
+    private $__existProductMetasIds = array();
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
@@ -81,12 +82,21 @@ class Product extends ShopAppModel {
                 }else{
                     $value = $values;
                     array_push($data['ProductMeta'], array(
-                        'property_id' => $propertyId[1],
-                        'property_value' => $value
+                        'ProductMeta' => array(
+                            'property_id' => $propertyId[1],
+                            'property_value' => $value
+                        )
                     ));
                 }
 
                 unset($data['ProductMeta'][$key]);
+            }
+        }
+        if(isset($data['Product']['id']) && $this->__hasProductMeta){
+            $this->id = $data['Product']['id'];
+            $this->__processExistProductMetas($data);
+            if(!empty($data['ProductCombination'])){
+                $this->__saveCombinations($data['ProductCombination']);
             }
         }
         $this->__deleteAttachment($data);
@@ -94,9 +104,77 @@ class Product extends ShopAppModel {
         return $result;
     }
 
+    private function __saveCombinations(&$combinations = array()){
+        $requestCombinationsProductMetaIds = array();
+        $combinations['pictures'] = implode(',', array_keys($combinations['pictures']));
+        if(isset($combinations['combinations']) && !empty($combinations['combinations'])){
+            foreach($combinations['combinations'] as $combination){
+                list($propertyId, $propertyValue) = explode('-', $combination);
+                $productMetaId = $this->ProductMeta->field('id', array(
+                    'product_id' => $this->id,
+                    'property_id' => $propertyId,
+                    'property_value' => $propertyValue
+                ));
+                $combinations['CombinationsProperty'][] = array(
+                    'CombinationsProperty' => array(
+                        'product_meta_id' => $productMetaId
+                    )
+                );
+
+                array_push($requestCombinationsProductMetaIds, $productMetaId);
+            }
+            $ProductCombination = $this->ProductMeta->CombinationsProperty->ProductCombination;
+            if(!empty($combinations['id'])){
+                $combinationId = $combinations['id'];
+                //Delete All Combinations_Properties.
+                $ProductCombination->CombinationsProperty->deleteAll(array(
+                    'product_combination_id' => $combinationId,
+                ));
+            }
+            $ProductCombination->saveAll($combinations);
+
+        }
+    }
+    private function __processExistProductMetas(&$data){
+        $conditions = array(
+            'product_id' => $this->id,
+            'NOT' => array(
+                'Property.type' => 'text'
+            )
+        );
+        if(count($data['ProductMeta']) > 1){
+            foreach($data['ProductMeta'] as $key => $meta){
+                $conditions['OR'][] = $meta['ProductMeta'];
+            }
+        }elseif(count($data['ProductMeta']) > 0){
+            $conditions = array_merge($conditions, $data['ProductMeta'][0]['ProductMeta']);
+        }
+        $existMetas = $this->ProductMeta->find('all', array(
+            'fields' => array('id', 'property_id', 'property_value'),
+            'conditions' => $conditions
+        ));
+
+        $existProductMetas = Set::combine($existMetas,
+            '{n}.ProductMeta.id',
+            array('{0}:{1}', '{n}.ProductMeta.property_id', '{n}.ProductMeta.property_value')
+        );
+        foreach($data['ProductMeta'] as $key => $meta){
+            $requestMetas = $meta['ProductMeta']['property_id'].':'.$meta['ProductMeta']['property_value'];
+            if(in_array($requestMetas, $existProductMetas)){
+                unset($data['ProductMeta'][$key]);
+            }
+        }
+        $this->__existProductMetasIds = array_keys($existProductMetas);
+    }
+
     public function afterSave($created, $options = Array()){
         if($this->__hasProductMeta){
-            $this->ProductMeta->deleteAll(array('product_id' => $this->id));
+            $this->ProductMeta->deleteAll(array(
+                'product_id' => $this->id,
+                'NOT' => array(
+                    'ProductMeta.id' => $this->__existProductMetasIds
+                )
+            ));
         }
     }
 
@@ -204,8 +282,20 @@ class Product extends ShopAppModel {
                 ),
             )
         ));
-        return $combinations;
+        $beautyCombinations = array();
+        foreach($combinations as $combination){
+            $key = $combination['ProductCombination']['id'];
+            if(!isset($beautyCombinations[$key])){
+                $beautyCombinations[$key] = $combination['ProductCombination'];
+            }
+            $property = $combination['Property'];
+            $property['PropertyValue'] = $combination['PropertyValue']['option'];
+            $property['PropertyValueId'] = $combination['PropertyValue']['id'];
+            $beautyCombinations[$key]['Properties'][] = $property;
+        }
+        return $beautyCombinations;
     }
+
     private function __deleteAttachment(&$data = array()){
         if(isset($data['Attachment'])){
             $attachmentIds = $data['Attachment'];
