@@ -17,7 +17,8 @@ class PropertiesController extends ShopAppController {
 
     public function beforeFilter(){
         parent::beforeFilter();
-        $this->Security->csrfCheck = false;
+        /*$this->Security->csrfCheck = false;*/
+        $this->Components->disable('Security');
     }
 
     public function admin_toggle($id = null, $status = null, $field = null) {
@@ -65,10 +66,10 @@ class PropertiesController extends ShopAppController {
  * @return void
  */
 	public function admin_add($categoryId = null) {
-		if ($this->request->is('post')) {
-			$this->Property->create();
-			if ($this->Property->saveAssociated($this->request->data)) {
-				$this->Session->setFlash(__d('croogo', '%s has been saved', __d('shop', 'property')), 'default', array('class' => 'success'));
+        if ($this->request->is('post')) {
+            $this->Property->create();
+            if ($this->Property->saveAssociated($this->request->data)) {
+                $this->Session->setFlash(__d('croogo', '%s has been saved', __d('shop', 'property')), 'default', array('class' => 'success'));
 				$redirectTo = array('action' => 'index');
 				if (isset($this->request->data['apply'])) {
 					$redirectTo = array('action' => 'edit', $this->Property->id);
@@ -116,19 +117,10 @@ class PropertiesController extends ShopAppController {
                 'conditions' => array('Property.' . $this->Property->primaryKey => $id)
             );
 			$this->request->data = $this->Property->find('first', $options);
-            $this->request->data['PropertyValue'] = $this->__formatPropertyValues($this->request->data);
             $categories = $this->Property->Category->generateTreeList();
             $this->set(compact('categories'));
         }
 	}
-
-    private function __formatPropertyValues($data = array()){
-        $propertyValues = Set::extract('{n}.option', $data['PropertyValue']);
-        if(!empty($propertyValues)){
-            $propertyValues = implode(',', $propertyValues);
-        }
-        return array(array('option' => $propertyValues));
-    }
 
 /**
  * admin_delete method

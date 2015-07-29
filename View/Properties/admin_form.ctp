@@ -33,18 +33,6 @@ $this->append('tab-content');
 		echo $this->Form->input('name', array(
 			'label' =>  __d('shop', 'Name'),
 		));
-        echo $this->Form->input('type', array(
-            'label' =>  __d('shop', 'Type'),
-            'options' => array(
-                'text' => __d('shop', 'Text'),
-                'radio' => __d('shop', 'Radio'),
-                'checkbox' => __d('shop', 'Checkbox'),
-                'select' => __d('shop', 'Select')
-            )
-        ));
-        echo $this->Form->input('PropertyValue.0.option', array(
-            'label' =>  __d('shop', 'Options'),
-        ));
 		echo $this->Form->input('title', array(
 			'label' =>  __d('shop', 'Title'),
 		));

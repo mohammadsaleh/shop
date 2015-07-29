@@ -76,22 +76,25 @@ class Property extends ShopAppModel {
 
     public function saveAssociated($data = NULL, $options = Array()){
         $propertyValues = array();
-        if($data['Property']['type'] != 'text'){
-            $propertyValues = Set::extract('{n}.option', $data['PropertyValue']);
-            $propertyValues = array_shift($propertyValues);
-            $propertyValues = explode(',', str_replace('،', ',', $propertyValues));
-            $data['PropertyValue'] = array_map(function($value){return ['option' => trim($value)];}, $propertyValues);
-        }else{
-            unset($data['PropertyValue']); //?
+        $propertyValues = Set::extract('{n}.option', $data['PropertyValue']);
+        $propertyValues = array_shift($propertyValues);
+        $propValues = [];
+        foreach($propertyValues as $key => &$propertyValue){
+            $trimValue = trim($propertyValue);
+            if(!empty($trimValue)){
+                $propValues[] = ['option' => $trimValue];
+            }
         }
-        if(isset($data['Property']['id']) && !empty($propertyValues)){
+        $data['PropertyValue'] = $propValues;
+        if(!empty($data['Property']['id']) && !empty($propertyValues)){
             $this->__processExistPropertyValues($data, $propertyValues);
         }
         return parent::saveAssociated($data);
     }
 
     private function __processExistPropertyValues(&$data, $propertyValues = array()){
-        $existPropertyValues = $this->PropertyValue->find('all', array(
+        return $this->PropertyValue->deleteAll(array('property_id' => $data['Property']['id']), false);
+        /*$existPropertyValues = $this->PropertyValue->find('all', array(
             'recursive' => -1,
             'fields' => array('id', 'option'),
             'conditions' => array(
@@ -105,7 +108,7 @@ class Property extends ShopAppModel {
                 unset($data['PropertyValue'][$key]);
             }
         }
-        $this->__existPropertyValuesIds = array_keys($existPropertyValues);
+        $this->__existPropertyValuesIds = array_keys($existPropertyValues);*/
     }
 
     public function afterSave($created, $options = Array()){

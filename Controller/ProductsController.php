@@ -128,10 +128,12 @@ class ProductsController extends ShopAppController {
                 $factureItem['combination'] = $item['Combinations'][$combination_id];
             }
             foreach($this->request->data['metas'] as $propertyId => $propertyValue){
+
                 array_push($factureItem['FactureItemMeta'], array(
                     'FactureItemMeta' => array(
                         'property_id' => $propertyId,
-                        'property_value' => $propertyValue
+                        'property_value' => $propertyValue,
+                        'property_title' => 'قرمز',
                     )
                 ));
             }

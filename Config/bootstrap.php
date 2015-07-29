@@ -5,6 +5,9 @@ Dropzone::load('Shop.default');
 Croogo::hookAdminTab('Products/admin_add', 'Properties', 'Shop.product_category_properties');
 Croogo::hookAdminTab('Products/admin_edit', 'Properties', 'Shop.product_category_properties');
 
+Croogo::hookAdminBox('Properties/admin_add', 'Type', 'Shop.properties_type');
+Croogo::hookAdminBox('Properties/admin_edit', 'Type', 'Shop.properties_type');
+
 Croogo::hookAdminTab('Products/admin_add', 'Combinations', 'Shop.product_combinations');
 Croogo::hookAdminTab('Products/admin_edit', 'Combinations', 'Shop.product_combinations');
 
