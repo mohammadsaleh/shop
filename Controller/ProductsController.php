@@ -35,7 +35,13 @@ class ProductsController extends ShopAppController {
                 'title'
             ), -1);
             $selectableProperties = $this->Product->Category->getCategoryProperties($product['Category']['id'], true);
+            $options = array(
+                'conditions' => array("Product.id" => $id),
+            );
+            $productSelectableProperties = $this->Product->ProductMeta->find("all", $options);
+            echo'<pre/>';print_r($productSelectableProperties);die;
             $product['SelectableProperties'] = $selectableProperties;
+            $product['ProductSelectableProperties'] = $productSelectableProperties;
             $product['CategoryPath'] = Set::extract('{n}.Category', $categoryPath);
             $this->set('product', $product);
 //            debug($product);die;
@@ -228,7 +234,12 @@ class ProductsController extends ShopAppController {
             $this->request->data = $this->Product->find('first', $options);
             $categories = $this->Product->Category->generateTreeList();
             $categoryProperties = $this->Product->Category->getCategoryProperties($this->request->data['Category']['id']);
-            $this->set(compact('categories', 'categoryProperties'));
+            $options = array(
+                'conditions' => array("Product.id" => $id),
+                'fields' => array('ProductMeta.*'),
+            );
+            $productMeta = $this->Product->ProductMeta->find("all", $options);
+            $this->set(compact('categories', 'categoryProperties', 'productMeta'));
         }
     }
     /**
