@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-23 15:10+0330\n"
+"PO-Revision-Date: 2015-07-31 00:53+0330\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: EMAIL@ADDRESS\n"
 "Language: fa_IR\n"
@@ -15,57 +15,52 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.8.1\n"
 
-#: Config/bootstrap.php:5;6 View/Properties/admin_form.ctp:2;7;11
-#: View/Properties/admin_index.ctp:2;7
-msgid "Properties"
-msgstr "ویژگی ها"
-
-#: Config/bootstrap.php:7
+#: Config/bootstrap.php:14
 msgid "Add Property"
 msgstr "افزودن ویژگی جدید"
 
-#: Config/bootstrap.php:14
+#: Config/bootstrap.php:32
 msgid "Shop Center"
 msgstr "فروشگاه"
 
-#: Config/bootstrap.php:20 View/Categories/admin_form.ctp:2;7;11
+#: Config/bootstrap.php:38 View/Categories/admin_form.ctp:2;7;11
 #: View/Categories/admin_index.ctp:2;7
 msgid "Categories"
 msgstr "دسته‌ها"
 
-#: Config/bootstrap.php:29
+#: Config/bootstrap.php:47
 msgid "Category Properties"
 msgstr "ویژگی های دسته"
 
-#: Config/bootstrap.php:38 View/Products/admin_form.ctp:2;7;11
+#: Config/bootstrap.php:56 View/Products/admin_form.ctp:2;7;11
 #: View/Products/admin_index.ctp:2;7
 msgid "Products"
 msgstr "محصولات"
 
-#: Controller/CategoriesController.php:206;221;231;247;251;261;282
+#: Controller/CategoriesController.php:210;225;235;251;255;265;286
 msgid "category"
 msgstr "دسته"
 
-#: Controller/CategoriesController.php:286;289
+#: Controller/CategoriesController.php:290;293
 #: View/Categories/admin_form.ctp:19 View/Elements/categories_tree_panel.ctp:7
 #: View/Elements/category_properties.ctp:11 View/Products/admin_form.ctp:30
 #: View/Products/admin_index.ctp:15
 msgid "Category"
 msgstr "دسته"
 
-#: Controller/ProductsController.php:149;163;173;190;195;205;235
+#: Controller/ProductsController.php:168;182;192;209;214;224;254
 msgid "product"
 msgstr "محصول"
 
-#: Controller/ProductsController.php:239;242 View/Products/admin_form.ctp:19
+#: Controller/ProductsController.php:258;261 View/Products/admin_form.ctp:19
 msgid "Product"
 msgstr "محصول"
 
-#: Controller/PropertiesController.php:56;71;81;98;102;112;144
+#: Controller/PropertiesController.php:57;72;82;99;103;113;136
 msgid "property"
 msgstr "ویژگی"
 
-#: Controller/PropertiesController.php:148;151
+#: Controller/PropertiesController.php:140;143
 #: View/Properties/admin_form.ctp:19
 msgid "Property"
 msgstr "ویژگی"
@@ -75,7 +70,7 @@ msgid "Parent"
 msgstr "گزینه والد"
 
 #: View/Categories/admin_form.ctp:34 View/Products/admin_form.ctp:37
-#: View/Properties/admin_form.ctp:49
+#: View/Properties/admin_form.ctp:37
 msgid "Title"
 msgstr "عنوان"
 
@@ -87,7 +82,8 @@ msgstr "نام مستعار"
 msgid "Description"
 msgstr "توضیحات"
 
-#: View/Categories/admin_index.ctp:13 View/Products/admin_index.ctp:13
+#: View/Categories/admin_index.ctp:13
+#: View/Elements/product_combinations.ctp:156 View/Products/admin_index.ctp:13
 #: View/Properties/admin_index.ctp:13
 msgid "id"
 msgstr "شناسه"
@@ -104,6 +100,94 @@ msgstr "ویژگی ها"
 #: View/Elements/dropzone_template.ctp:20;144
 msgid "Current Index"
 msgstr "تصویر پیشفرض"
+
+#: View/Elements/product_combinations.ctp:15
+msgid "Property Name"
+msgstr "ویژگی"
+
+#: View/Elements/product_combinations.ctp:46
+msgid "Property Values"
+msgstr "مقدار"
+
+#: View/Elements/product_combinations.ctp:81
+msgid "Increment on Price"
+msgstr "افزایش قیمت"
+
+#: View/Elements/product_combinations.ctp:87
+msgid "Increment on Weight"
+msgstr "افزایش وزن"
+
+#: View/Elements/product_combinations.ctp:93
+msgid "Number"
+msgstr "تعداد"
+
+#: View/Elements/product_combinations.ctp:120
+msgid "Pictures"
+msgstr "تصاویر"
+
+#: View/Elements/product_combinations.ctp:148
+msgid "set as default combination"
+msgstr "تنظیم به عنوان ترکیب پیشفرض"
+
+#: View/Elements/product_combinations.ctp:157
+msgid "combinations"
+msgstr "ترکیب"
+
+#: View/Elements/product_combinations.ctp:158
+msgid "inc price"
+msgstr "افزایش قیمت"
+
+#: View/Elements/product_combinations.ctp:159
+msgid "inc weight"
+msgstr "افزایش وزن"
+
+#: View/Elements/product_combinations.ctp:160
+msgid "number"
+msgstr "تعداد"
+
+#: View/Elements/product_combinations.ctp:198
+msgid "Combinations List"
+msgstr "فهرست ترکیبات"
+
+#: View/Elements/product_combinations.ctp:295
+msgid "Warning"
+msgstr "هشدار"
+
+#: View/Elements/product_combinations.ctp:300
+msgid "You can add just one combination of each properties"
+msgstr "شما فقط می‎توانید یک ترکیب در هر نوع از ویژگی‎ها اضافه کنید."
+
+#: View/Elements/product_combinations.ctp:305
+msgid "Close"
+msgstr "بستن"
+
+#: View/Elements/properties_type.ctp:4
+msgid "Type"
+msgstr "نوع"
+
+#: View/Elements/properties_type.ctp:6
+msgid "Text"
+msgstr "متن"
+
+#: View/Elements/properties_type.ctp:7
+msgid "Radio"
+msgstr "دکمه های رادیویی"
+
+#: View/Elements/properties_type.ctp:8
+msgid "Checkbox"
+msgstr "چک باکس"
+
+#: View/Elements/properties_type.ctp:9
+msgid "Select"
+msgstr "- گزینش کنید -"
+
+#: View/Elements/properties_type.ctp:10
+msgid "Color"
+msgstr "رنگ"
+
+#: View/Elements/properties_type.ctp:15;25;35;71;79;139;146
+msgid "Options"
+msgstr "گزینه ها"
 
 #: View/Products/admin_form.ctp:54
 msgid "Price (Rials)"
@@ -133,6 +217,10 @@ msgstr "تعداد"
 msgid "created"
 msgstr "تاریخ ایجاد"
 
+#: View/Properties/admin_form.ctp:2;7;11 View/Properties/admin_index.ctp:2;7
+msgid "Properties"
+msgstr "ویژگی ها"
+
 #: View/Properties/admin_form.ctp:29
 msgid "Product Category"
 msgstr "دسته محصول"
@@ -141,39 +229,15 @@ msgstr "دسته محصول"
 msgid "Name"
 msgstr "نام"
 
-#: View/Properties/admin_form.ctp:37
-msgid "Type"
-msgstr "نوع"
-
 #: View/Properties/admin_form.ctp:39
-msgid "Text"
-msgstr "متن"
-
-#: View/Properties/admin_form.ctp:40
-msgid "Radio"
-msgstr "دکمه های رادیویی"
-
-#: View/Properties/admin_form.ctp:41
-msgid "Checkbox"
-msgstr "چک باکس"
-
-#: View/Properties/admin_form.ctp:42
-msgid "Select"
-msgstr "- گزینش کنید -"
-
-#: View/Properties/admin_form.ctp:46
-msgid "Options"
-msgstr "گزینه ها"
-
-#: View/Properties/admin_form.ctp:51
 msgid "Is searchable?"
 msgstr "قابل جستجو است؟"
 
-#: View/Properties/admin_form.ctp:55
+#: View/Properties/admin_form.ctp:43
 msgid "Is hidden?"
 msgstr "مخفی شود؟"
 
-#: View/Properties/admin_form.ctp:59
+#: View/Properties/admin_form.ctp:47
 msgid "Is selectable on order?"
 msgstr "بر اساس سفارش قابل انتخاب است؟"
 

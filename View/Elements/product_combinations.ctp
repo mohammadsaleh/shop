@@ -285,7 +285,6 @@ $this->append('script');
 <?php
 $this->end();
 ?>
-<!--شما فقط می‎توانید یک ترکیب در هر نوع از ویژگی‎ها اضافه کنید.-->
 <div id="dialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

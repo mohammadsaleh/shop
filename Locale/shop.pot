@@ -13,41 +13,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: Config/bootstrap.php:5;6
-#: View/Properties/admin_form.ctp:2;7;11
-#: View/Properties/admin_index.ctp:2;7
-msgid "Properties"
-msgstr ""
-
-#: Config/bootstrap.php:7
+#: Config/bootstrap.php:14
 msgid "Add Property"
 msgstr ""
 
-#: Config/bootstrap.php:14
+#: Config/bootstrap.php:32
 msgid "Shop Center"
 msgstr ""
 
-#: Config/bootstrap.php:20
+#: Config/bootstrap.php:38
 #: View/Categories/admin_form.ctp:2;7;11
 #: View/Categories/admin_index.ctp:2;7
 msgid "Categories"
 msgstr ""
 
-#: Config/bootstrap.php:29
+#: Config/bootstrap.php:47
 msgid "Category Properties"
 msgstr ""
 
-#: Config/bootstrap.php:38
+#: Config/bootstrap.php:56
 #: View/Products/admin_form.ctp:2;7;11
 #: View/Products/admin_index.ctp:2;7
 msgid "Products"
 msgstr ""
 
-#: Controller/CategoriesController.php:206;221;231;247;251;261;282
+#: Controller/CategoriesController.php:210;225;235;251;255;265;286
 msgid "category"
 msgstr ""
 
-#: Controller/CategoriesController.php:286;289
+#: Controller/CategoriesController.php:290;293
 #: View/Categories/admin_form.ctp:19
 #: View/Elements/categories_tree_panel.ctp:7
 #: View/Elements/category_properties.ctp:11
@@ -56,20 +50,20 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: Controller/ProductsController.php:149;163;173;190;195;205;235
+#: Controller/ProductsController.php:168;182;192;209;214;224;254
 msgid "product"
 msgstr ""
 
-#: Controller/ProductsController.php:239;242
+#: Controller/ProductsController.php:258;261
 #: View/Products/admin_form.ctp:19
 msgid "Product"
 msgstr ""
 
-#: Controller/PropertiesController.php:56;71;81;98;102;112;144
+#: Controller/PropertiesController.php:57;72;82;99;103;113;136
 msgid "property"
 msgstr ""
 
-#: Controller/PropertiesController.php:148;151
+#: Controller/PropertiesController.php:140;143
 #: View/Properties/admin_form.ctp:19
 msgid "Property"
 msgstr ""
@@ -80,7 +74,7 @@ msgstr ""
 
 #: View/Categories/admin_form.ctp:34
 #: View/Products/admin_form.ctp:37
-#: View/Properties/admin_form.ctp:49
+#: View/Properties/admin_form.ctp:37
 msgid "Title"
 msgstr ""
 
@@ -95,6 +89,7 @@ msgid "Description"
 msgstr ""
 
 #: View/Categories/admin_index.ctp:13
+#: View/Elements/product_combinations.ctp:156
 #: View/Products/admin_index.ctp:13
 #: View/Properties/admin_index.ctp:13
 msgid "id"
@@ -112,6 +107,94 @@ msgstr ""
 
 #: View/Elements/dropzone_template.ctp:20;144
 msgid "Current Index"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:15
+msgid "Property Name"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:46
+msgid "Property Values"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:81
+msgid "Increment on Price"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:87
+msgid "Increment on Weight"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:93
+msgid "Number"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:120
+msgid "Pictures"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:148
+msgid "set as default combination"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:157
+msgid "combinations"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:158
+msgid "inc price"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:159
+msgid "inc weight"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:160
+msgid "number"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:198
+msgid "Combinations List"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:295
+msgid "Warning"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:300
+msgid "You can add just one combination of each properties"
+msgstr ""
+
+#: View/Elements/product_combinations.ctp:305
+msgid "Close"
+msgstr ""
+
+#: View/Elements/properties_type.ctp:4
+msgid "Type"
+msgstr ""
+
+#: View/Elements/properties_type.ctp:6
+msgid "Text"
+msgstr ""
+
+#: View/Elements/properties_type.ctp:7
+msgid "Radio"
+msgstr ""
+
+#: View/Elements/properties_type.ctp:8
+msgid "Checkbox"
+msgstr ""
+
+#: View/Elements/properties_type.ctp:9
+msgid "Select"
+msgstr ""
+
+#: View/Elements/properties_type.ctp:10
+msgid "Color"
+msgstr ""
+
+#: View/Elements/properties_type.ctp:15;25;35;71;79;139;146
+msgid "Options"
 msgstr ""
 
 #: View/Products/admin_form.ctp:54
@@ -143,6 +226,11 @@ msgstr ""
 msgid "created"
 msgstr ""
 
+#: View/Properties/admin_form.ctp:2;7;11
+#: View/Properties/admin_index.ctp:2;7
+msgid "Properties"
+msgstr ""
+
 #: View/Properties/admin_form.ctp:29
 msgid "Product Category"
 msgstr ""
@@ -151,39 +239,15 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: View/Properties/admin_form.ctp:37
-msgid "Type"
-msgstr ""
-
 #: View/Properties/admin_form.ctp:39
-msgid "Text"
-msgstr ""
-
-#: View/Properties/admin_form.ctp:40
-msgid "Radio"
-msgstr ""
-
-#: View/Properties/admin_form.ctp:41
-msgid "Checkbox"
-msgstr ""
-
-#: View/Properties/admin_form.ctp:42
-msgid "Select"
-msgstr ""
-
-#: View/Properties/admin_form.ctp:46
-msgid "Options"
-msgstr ""
-
-#: View/Properties/admin_form.ctp:51
 msgid "Is searchable?"
 msgstr ""
 
-#: View/Properties/admin_form.ctp:55
+#: View/Properties/admin_form.ctp:43
 msgid "Is hidden?"
 msgstr ""
 
-#: View/Properties/admin_form.ctp:59
+#: View/Properties/admin_form.ctp:47
 msgid "Is selectable on order?"
 msgstr ""
 
